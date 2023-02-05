@@ -2,7 +2,6 @@ package com.seregamazur.oauth2.tutorial.client.model.github;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenRequest;
@@ -33,7 +32,7 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
     }
 
     @Override
-    public ResponseEntity<String> getUserInfo(String accessToken) {
+    public GithubUserInfo getUserInfo(String accessToken) {
         return githubClientData.getUserInfo(accessToken);
     }
 

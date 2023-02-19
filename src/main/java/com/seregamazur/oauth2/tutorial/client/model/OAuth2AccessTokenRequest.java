@@ -18,4 +18,6 @@ public class OAuth2AccessTokenRequest {
     private String code;
     @JsonProperty("redirect_uri")
     private String redirectUri;
+    @JsonProperty("grant_type")
+    private String grantType;
 }

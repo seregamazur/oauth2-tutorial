@@ -1,9 +1,12 @@
 server:
   port: 8081
 google:
-  auth-uri: "https://accounts.google.com/o/oauth2/auth"
   client-id: ${GOOGLE_CLIENT_ID}
   client-secret: ${GOOGLE_CLIENT_SECRET}
+  redirect-uri: http://localhost:8081/oauth2/authorization/google/callback
+  auth-uri: https://accounts.google.com/o/oauth2/v2/auth?client_id=${google.client-id}&scope=profile+email&redirect_uri=${google.redirect-uri}&response_type=code&redirect_url=${google.redirect-uri}
+  access-uri: https://www.googleapis.com/oauth2/v4/token
+  user-info: https://www.googleapis.com/oauth2/v3/userinfo
 
 github:
   client-id: ${GITHUB_CLIENT_ID}

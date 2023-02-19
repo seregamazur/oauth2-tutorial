@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>OAuth2 Account info</title>
+    <style>
+        body {
+            margin: 50px 50px;
+        }
+
+        a {
+            display: block;
+            line-height: 40px;
+        }
+    </style>
+</head>
+<body>
+<h1>Google OAuth2 user info</h1>
+<a th:href="@{/logout}" class="btn btn-primary btn-sm mb-3">Log Out</a>
+<h4>Welcome to Google OAuth2</h4>
+<p th:text="'Your name:' + ${info.name}"></p>
+<p th:text="'Your email:' + ${info.email}"></p>
+Your picture: <img th:src="${info.picture}"/>
+</body>
+</html>

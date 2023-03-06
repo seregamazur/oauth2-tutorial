@@ -1,5 +1,6 @@
 server:
   port: 8081
+
 google:
   client-id: ${GOOGLE_CLIENT_ID}
   client-secret: ${GOOGLE_CLIENT_SECRET}
@@ -15,20 +16,16 @@ github:
   auth-uri: https://github.com/login/oauth/authorize?client_id=${github.client-id}&response_type=code&redirect_url=${github.redirect-uri}
   access-uri: https://github.com/login/oauth/access_token
 
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          facebook:
-            client-id: ${FACEBOOK_CLIENT_ID}
-            client-secret: ${FACEBOOK_CLIENT_SECRET}
+facebook:
+  client-id: ${FACEBOOK_CLIENT_ID}
+  client-secret: ${FACEBOOK_CLIENT_SECRET}
+  redirect-uri: http://localhost:8081/oauth2/authorization/facebook/callback
+  auth-uri: https://www.facebook.com/v16.0/dialog/oauth?client_id=${facebook.client-id}&redirect_uri=${facebook.redirect-uri}&state=sadfsd
+  access-uri: https://graph.facebook.com/v16.0/oauth/access_token?client_id=${facebook.client-id}&client_secret=${facebook.client-secret}&code={code-parameter}
+
 okta:
   oauth2:
     client:
       client-id: ${OKTA_CLIENT_ID}
       client-secret: ${OKTA_CLIENT_SECRET}
       authorization-uri: https://dev-14986880.okta.com/oauth2/default/v1/authorize
-logging:
-  level:
-    com.example.oidcoauth2spring.client.GithubClientAuthorization: DEBUG

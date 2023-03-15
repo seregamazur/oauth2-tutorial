@@ -14,11 +14,11 @@
     </style>
 </head>
 <body>
-<h1>Github OAuth2 user info</h1>
+<h1>OAuth2 user info</h1>
 <a th:href="@{/logout}" class="btn btn-primary btn-sm mb-3">Log Out</a>
 <h4>Welcome to GitHub OAuth2</h4>
-<p th:text="'Your name:' + ${info.name}"></p>
-<p th:text="'Your login:' + ${info.login}"></p>
-<p th:text="'Your scopes:' + ${info.scopes}"></p>
+<p th:text="'Your name: ' + ${info.name}"></p>
+<p th:text="'Your login: ' + ${info.login}"></p>
+<p th:text="'Your scopes: ' + ${info.scopes}"></p>
 </body>
 </html>

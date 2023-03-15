@@ -24,8 +24,9 @@ facebook:
   access-uri: https://graph.facebook.com/v16.0/oauth/access_token?client_id=${facebook.client-id}&client_secret=${facebook.client-secret}&code={code-parameter}
 
 okta:
-  oauth2:
-    client:
-      client-id: ${OKTA_CLIENT_ID}
-      client-secret: ${OKTA_CLIENT_SECRET}
-      authorization-uri: https://dev-14986880.okta.com/oauth2/default/v1/authorize
+  client-id: ${OKTA_CLIENT_ID}
+  client-secret: ${OKTA_CLIENT_SECRET}
+  redirect-uri: http://localhost:8081/oauth2/authorization/okta/callback
+#  TODO why do we need it here
+  auth-uri: https://dev-12266902.okta.com/oauth2/default/v1/authorize?client_id=${okta.client-id}&scope=openid%20email%20profile&redirect_uri=${okta.redirect-uri}&response_type=code&redirect_url=${okta.redirect-uri}&state=F24234FAC
+  access-uri: https://dev-12266902.okta.com/oauth2/default/v1/token

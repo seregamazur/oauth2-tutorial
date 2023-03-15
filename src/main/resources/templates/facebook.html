@@ -14,11 +14,11 @@
     </style>
 </head>
 <body>
-<h1>Meta OAuth2 user info</h1>
+<h1>OAuth2 user info</h1>
 <a th:href="@{/logout}" class="btn btn-primary btn-sm mb-3">Log Out</a>
 <h4>Welcome to Facebook OAuth2</h4>
-<p th:text="'Your id:' + ${info.id}"></p>
-<p th:text="'Your first name:' + ${info.firstName}"></p>
-<p th:text="'Your last name:' + ${info.lastName}"></p>
+<p th:text="'Your id: ' + ${info.id}"></p>
+<p th:text="'Your first name: ' + ${info.firstName}"></p>
+<p th:text="'Your last name: ' + ${info.lastName}"></p>
 </body>
 </html>

@@ -16,9 +16,9 @@
 <body>
 <h1>OAuth2 user info</h1>
 <a th:href="@{/logout}" class="btn btn-primary btn-sm mb-3">Log Out</a>
-<h4>Welcome to Google OAuth2</h4>
-<p th:text="'Your name: ' + ${info.name}"></p>
+<h4>Welcome to Okta OAuth2</h4>
+<p th:text="'Your sub: ' + ${info.sub}"></p>
 <p th:text="'Your email: ' + ${info.email}"></p>
-Your picture: <img th:src="${info.picture}"/>
+<p th:text="'Your name: ' + ${info.name}"></p>
 </body>
 </html>

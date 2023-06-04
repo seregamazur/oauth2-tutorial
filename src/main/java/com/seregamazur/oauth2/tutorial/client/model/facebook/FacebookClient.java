@@ -9,7 +9,7 @@ import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
 @FeignClient(name = "facebookClient", url = "https://graph.facebook.com")
 public interface FacebookClient {
 
-    @GetMapping(value = "v16.0/oauth/access_token?client_id={clientId}&client_secret={clientSecret}&redirect_uri={redirectUri}&code={authCode}",
+    @GetMapping(value = "v16.0/oauth/access_token?client_id={clientId}&scope=public_profile&client_secret={clientSecret}&redirect_uri={redirectUri}&code={authCode}",
         headers = { "Content-Type=application/json", "Accept=application/json" })
     OAuth2AccessToken getAccessToken(@PathVariable("clientId") String clientId,
         @PathVariable("clientSecret") String clientSecret,

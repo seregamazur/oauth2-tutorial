@@ -47,7 +47,7 @@ public class GoogleOAuth2Controller {
         GoogleUserInfo googleUserInfo = authorizedClient.map(client -> googleClient.getUserInfo(
             "Bearer " + client.getAccessToken().getTokenValue())).orElse(null);
         model.addAttribute("info", googleUserInfo);
-        return "google";
+        return "main-layout";
     }
 
 }

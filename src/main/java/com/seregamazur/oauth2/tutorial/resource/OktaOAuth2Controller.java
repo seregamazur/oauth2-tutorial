@@ -47,6 +47,6 @@ public class OktaOAuth2Controller {
         OktaUserInfo googleUserInfo = authorizedClient.map(client -> oktaClient.getUserInfo(
             "Bearer " + client.getAccessToken().getTokenValue())).orElse(null);
         model.addAttribute("info", googleUserInfo);
-        return "okta";
+        return "main-layout";
     }
 }

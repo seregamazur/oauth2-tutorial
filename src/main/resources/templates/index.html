@@ -1,124 +1,301 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <title>Login with OAuth2</title>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
             background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
         }
 
-        /* style the container */
         .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            border-radius: 5px;
-            padding: 20px 0 30px 0;
+            width: 400px;
+            margin: 0 auto;
+            margin-top: 50px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
         }
 
-        /* style inputs and link buttons */
-        input,
-        .btn {
-            width: 100%;
-            padding: 12px;
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type=text],
+        input[type=password] {
+            width: 80%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            background-color: #f8f8f8;
+            font-size: 16px;
+        }
+
+        input[type=submit] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
             border: none;
             border-radius: 4px;
-            margin: 5px 0;
-            opacity: 0.85;
-            display: inline-block;
-            font-size: 17px;
-            line-height: 20px;
-            text-decoration: none; /* remove underline from anchors */
-        }
-
-        input:hover,
-        .btn:hover {
-            opacity: 1;
-        }
-
-        /* add appropriate colors to fb, twitter and google buttons */
-        .fb {
-            background-color: #3B5998;
-            color: white;
-        }
-
-        .gb {
-            background-color: #000000;
-            color: white;
-        }
-
-        .okta {
-            background-color: #21c25f;
-            color: white;
-        }
-
-        .google {
-            background-color: #dd4b39;
-            color: white;
-        }
-
-        /* style the submit button */
-        input[type=submit] {
-            background-color: #04AA6D;
-            color: white;
             cursor: pointer;
+            width: 80%;
         }
 
         input[type=submit]:hover {
             background-color: #45a049;
         }
 
-        .col {
-            margin: auto;
-            width: 50%;
-            border: 3px solid green;
-            padding: 10px;
+        input[type=button] {
+            background-color: #FFA500;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 80%;
         }
 
-        /* Clear floats after the columns */
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
+        input[type=button]:hover {
+            background-color: #F0A500;
         }
 
-        /* Responsive layout - when the screen is less than 650px wide, make the two columns stack on top of each other instead of next to each other */
-        @media screen and (max-width: 650px) {
-            .col {
-                width: 100%;
-                margin-top: 0;
-            }
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
         }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 180%;
+            height: 50px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .google {
+            background-color: #dd4b39;
+        }
+
+        .github {
+            background-color: #333;
+        }
+
+        .okta {
+            background-color: #005FF9;
+        }
+
+        .facebook {
+            background-color: #3b5998;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .line {
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            line-height: 0.1em;
+            margin: 20px 0 10px;
+        }
+
+        .line span {
+            background-color: #f2f2f2;
+            padding: 0 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            max-width: 400px;
+        }
+
+        .modal-button-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal-button-row button {
+            margin-right: 10px;
+        }
+
+        .modal-button-row button:last-child {
+            margin-right: 0;
+        }
+
+
+        .button-submit {
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-cancel {
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-submit:hover {
+            background-color: darkgreen;
+        }
+
+        .button-cancel:hover {
+            background-color: darkred;
+        }
+
+        .btn-cancel {
+            background-color: #ccc;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-register {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-register:hover {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+
     </style>
 </head>
-
 <body>
 <div class="container">
-        <div class="row">
-            <h2 style="text-align:center">Login with Social Media</h2>
+    <h2>Login</h2>
+    <br>
+    <form action="#" method="post">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required>
 
-            <div class="col">
-                <a href="/oauth2/authorization/google" class="google btn">
-                    <i class="fa fa-google fa-fw"></i> Login with Google
-                </a>
-                <a href="/oauth2/authorization/facebook" class="fb btn">
-                    <i class="fa fa-facebook fa-fw"></i> Login with Facebook
-                </a>
-                <a href="/oauth2/authorization/github" class="gb btn">
-                    <i class="fa fa-facebook fa-fw"></i> Login with Github
-                </a>
-                <a href="/oauth2/authorization/okta" class="okta btn">
-                    <i class="fa fa-facebook fa-fw"></i> Login with Okta
-                </a>
-            </div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+        <input type="submit" value="Login">
+        <input type="button" id="register-btn" value="Create account" onclick="openRegister()">
+        <div class="line"><span>OR</span></div>
+
+
+        <div class="social-login">
+            <a href="/oauth2/authorization/google" class="btn google">Sign in with Google</a>
+            <a href="/oauth2/authorization/facebook" class="btn facebook">Sign in with Facebook</a>
+            <a href="/oauth2/authorization/github" class="btn github">Sign in with GitHub</a>
+            <a href="/oauth2/authorization/okta" class="btn okta">Sign in with Okta</a>
         </div>
-
+    </form>
 </div>
+<div id="register-modal" class="modal">
+    <div class="modal-content">
+        <form>
+            <label for="fullname">Full Name:</label>
+            <input type="text" id="fullname" name="fullname" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <div class="button-row">
+                <button class="button-submit" id="register-submit">Register</button>
+                <button type="button" class="button-cancel" id="register-cancel" data-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Get the modal
+    var modal = document.getElementById("register-modal");
+
+    // Get the button that opens the modal
+    var open_modal_btn = document.getElementById("register-btn");
+
+    // Get the buttons inside the modal
+    var registerSubmitBtn = document.getElementById("register-submit");
+    var registerCancelBtn = document.getElementById("register-cancel");
+
+    // When the user clicks the button, open the modal
+    open_modal_btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // When the user clicks the Register button inside the modal, submit the form
+    registerSubmitBtn.onclick = function () {
+        // TODO: Implement form submission logic
+    }
+
+    // When the user clicks the Cancel button inside the modal, close the modal
+    registerCancelBtn.onclick = function () {
+        modal.style.display = "none";
+    }
+</script>
 </body>
 </html>

@@ -55,7 +55,7 @@ public class GithubOAuth2Controller {
         GithubUserInfo githubUserInfo = authorizedClient.map(client -> githubClient.getUserInfo(
             "Bearer " + client.getAccessToken().getTokenValue())).orElse(null);
         model.addAttribute("info", githubUserInfo);
-        return "github";
+        return "main-layout";
     }
 
 //    @GetMapping("/user")

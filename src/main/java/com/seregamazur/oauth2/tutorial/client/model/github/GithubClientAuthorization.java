@@ -4,7 +4,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenRequest;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenResponse;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
 
 @FeignClient(name = "githubClient", url = "https://github.com")

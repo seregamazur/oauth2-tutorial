@@ -4,14 +4,10 @@ import java.util.Map;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenRequest;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
-
-import feign.Param;
 
 @FeignClient(name = "oktaClient", url = "https://dev-12266902.okta.com")
 public interface OktaClient {

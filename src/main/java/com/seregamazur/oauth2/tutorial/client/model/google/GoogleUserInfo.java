@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class GoogleUserInfo {
     private String name;
-    private String picture;
     private String email;
 }

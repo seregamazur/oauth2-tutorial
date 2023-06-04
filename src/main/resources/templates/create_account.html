@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+<h1>Register</h1>
+<form action="#" method="post" th:action="@{/users/}" th:object="${user}">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" th:field="*{user.email}"><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br>
+
+    <label for="fullname">Full Name:</label>
+    <input type="text" id="fullname" name="fullname" th:field="*{user.fullName}"><br>
+
+    <button type="submit">Register</button>
+    <button type="button" onclick="window.close()">Cancel</button>
+</form>
+</body>
+</html>

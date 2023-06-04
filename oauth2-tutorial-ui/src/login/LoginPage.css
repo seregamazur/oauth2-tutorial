@@ -1,0 +1,278 @@
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 400px;
+    margin: 0 auto;
+    margin-top: 50px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input[type=text],
+input[type=password] {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    background-color: #f8f8f8;
+    font-size: 16px;
+}
+
+input[type=submit] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 80%;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+input[type=button] {
+    background-color: #FFA500;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 80%;
+}
+
+input[type=button]:hover {
+    background-color: #F0A500;
+}
+
+.social-login .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 50px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.social-login .social-icon {
+    margin-right: 10px;
+}
+
+.social-login .button-text {
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+}
+
+
+.social-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150%;
+    height: 50px;
+    margin-bottom: 10px;
+    border-radius: 25px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.google {
+    background-color: #dd4b39;
+}
+
+.github {
+    background-color: #333;
+}
+
+.okta {
+    background-color: #005FF9;
+}
+
+.facebook {
+    background-color: #3b5998;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+.line {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    line-height: 0.1em;
+    margin: 20px 0 10px;
+}
+
+.line span {
+    background-color: #f2f2f2;
+    padding: 0 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    max-width: 400px;
+}
+
+.modal-button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.modal-button-row button {
+    margin-right: 10px;
+}
+
+.modal-button-row button:last-child {
+    margin-right: 0;
+}
+
+
+.button-submit {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-cancel {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-submit:hover {
+    background-color: darkgreen;
+}
+
+.button-cancel:hover {
+    background-color: darkred;
+}
+
+.btn-cancel {
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-register {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-register:hover {
+    background-color: #ddd;
+    color: #333;
+}
+
+.btn-cancel:hover {
+    background-color: #f44336;
+    color: #fff;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

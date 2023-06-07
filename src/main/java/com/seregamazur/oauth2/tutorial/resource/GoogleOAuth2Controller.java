@@ -38,7 +38,7 @@ public class GoogleOAuth2Controller {
     //2. User got logged in and redirected to this endpoint with authorization code
     // We send a request with authorization code to receive access code
     @GetMapping("/oauth2/authorization/google/callback")
-    public String receiveCallbackAuthorization(@RequestParam("code") String code, Model model) {
+    public String receiveCallbackAuthorization(@RequestParam("code") String code) {
         OAuth2AccessToken oAuth2AccessToken = googleClient.convertAuthCodeToAccessToken(code);
         TokensCache.add(new OAuth2AuthorizedData(
             new OAuth2AuthorizedClientId(OAuth2ClientId.GOOGLE, "principal"),
@@ -46,8 +46,8 @@ public class GoogleOAuth2Controller {
         Optional<OAuth2AuthorizedClient> authorizedClient = TokensCache.findByClientId(OAuth2ClientId.GOOGLE);
         GoogleUserInfo googleUserInfo = authorizedClient.map(client -> googleClient.getUserInfo(
             "Bearer " + client.getAccessToken().getTokenValue())).orElse(null);
-        model.addAttribute("info", googleUserInfo);
-        return "main-layout";
+//        model.addAttribute("info", googleUserInfo);
+        return "App";
     }
 
 }

@@ -11,7 +11,7 @@ function LoginPage() {
     };
     const handleSocialLoginRedirect = async (siteName) => {
         try {
-            window.location.href = `{process.env.BACKEND_URL}/oauth2/authorization/` + siteName;
+            window.location.href = process.env.REACT_APP_BACKEND_URL + '/oauth2/authorization/' + siteName;
         } catch (error) {
             console.error('Error:', error);
         }

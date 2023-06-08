@@ -3,15 +3,21 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import App from './App';
 import LoginPage from './scenes/login/LoginPage';
+import Dashboard from "./scenes/dashboard";
+import Calendar from "./scenes/calendar";
+import OAuth2Token from "./components/OAuth2Token";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-        <React.StrictMode>
-            <BrowserRouter>
-                <Routes>
-                    <Route index element={<App />} />
-                    <Route path="login" element={<LoginPage />} />
-                </Routes>
-            </BrowserRouter>
-        </React.StrictMode>
+    <React.StrictMode>
+        <BrowserRouter>
+            <Routes>
+                <Route index element={<App/>}/>
+                <Route path="login" element={<LoginPage/>}/>
+                <Route path="dashboard" element={<Dashboard/>}/>
+                <Route path="calendar" element={<Calendar/>}/>
+                <Route path="oauth2/token" element={<OAuth2Token/>}/>
+            </Routes>
+        </BrowserRouter>
+    </React.StrictMode>
 );

@@ -1,6 +1,9 @@
 server:
   port: 8081
 
+resource:
+  location: http://localhost:3000/oauth2/token
+
 spring:
   data:
     mongodb:

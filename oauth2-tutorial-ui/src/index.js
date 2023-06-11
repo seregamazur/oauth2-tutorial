@@ -7,8 +7,7 @@ import Dashboard from "./scenes/dashboard";
 import Calendar from "./scenes/calendar";
 import OAuth2Token from "./components/OAuth2Token";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
+ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
@@ -19,5 +18,4 @@ root.render(
                 <Route path="oauth2/token" element={<OAuth2Token/>}/>
             </Routes>
         </BrowserRouter>
-    </React.StrictMode>
-);
+    </React.StrictMode>, document.getElementById('root'));

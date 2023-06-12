@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Box, IconButton} from "@mui/material";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -6,21 +6,30 @@ import Dropdown from "./Dropdown";
 import "./Dropdown.css"
 
 const Topbar = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const iconButtonRef = useRef(null);
 
     const handleButtonClick = () => {
-        setIsDropdownOpen(!isDropdownOpen);
+        setIsOpen((prevIsOpen) => !prevIsOpen);
     };
 
     const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setIsDropdownOpen(false);
+        if (iconButtonRef.current && !iconButtonRef.current.contains(event.target)) {
+            setIsOpen(false);
         }
     };
 
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
-        <div>
+        <>
             <Box display="flex" justifyContent="space-between" p={3}>
                 <Box>
                 </Box>
@@ -29,16 +38,16 @@ const Topbar = () => {
                     <IconButton>
                         <SettingsOutlinedIcon/>
                     </IconButton>
-                    <IconButton onClick={handleButtonClick}>
-                        <div>{isDropdownOpen && (
-                            <div ref={dropdownRef} className="dropdown-container">
-                                <Dropdown/></div>)}</div>
+                    <IconButton ref={iconButtonRef} onClick={handleButtonClick}>
+                        <div>
+                            {isOpen && (<div className="dropdown-container"><Dropdown/></div>)}
+                        </div>
                         <PersonOutlinedIcon/>
                     </IconButton>
                 </Box>
             </Box>
             <div class="line-topbar"></div>
-        </div>
+        </>
     );
 };
 

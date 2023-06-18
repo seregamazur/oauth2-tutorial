@@ -1,17 +1,19 @@
 package com.seregamazur.oauth2.tutorial.security.jwt;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.ToString;
 
+@ToString
+@Data
 public class JWTToken {
 
-    private String accessToken;
+    private String value;
 
-    public JWTToken(String accessToken) {
-        this.accessToken = accessToken;
+    public JWTToken(String value) {
+        this.value = value;
     }
 
-    @JsonProperty("access_token")
-    String getAccessToken() {
-        return accessToken;
+    public String getValue() {
+        return value;
     }
 }

@@ -1,12 +1,10 @@
 package com.seregamazur.oauth2.tutorial.resource;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.seregamazur.oauth2.tutorial.client.model.google.GoogleOAuth2Client;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
@@ -39,10 +37,10 @@ public class GoogleOAuth2Controller {
     //2. User got logged in and redirected to this endpoint with authorization code
     // We send a request with authorization code to receive access code
     @GetMapping("/oauth2/authorization/google/callback")
-    public ModelAndView receiveCallbackAuthorization(@RequestParam("code") String code) {
+    public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
         OAuth2AccessToken oAuth2AccessToken = googleClient.convertAuthCodeToAccessToken(code);
         JWTToken token = googleService.createJwtFromAccessToken(oAuth2AccessToken);
-        return new ModelAndView("redirect:" + location, Map.of("token", token));
+        return new RedirectView(location + "?token=" + token.getValue());
     }
 
 }

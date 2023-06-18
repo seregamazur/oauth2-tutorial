@@ -2,7 +2,7 @@ server:
   port: 8081
 
 resource:
-  location: http://localhost:3000/oauth2/token
+  location: http://localhost:3000/redirect
 
 spring:
   data:

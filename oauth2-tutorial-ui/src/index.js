@@ -15,7 +15,7 @@ ReactDOM.render(
                 <Route path="login" element={<LoginPage/>}/>
                 <Route path="dashboard" element={<Dashboard/>}/>
                 <Route path="calendar" element={<Calendar/>}/>
-                <Route path="oauth2/token" element={<OAuth2Token/>}/>
+                <Route path="redirect" element={<OAuth2Token/>}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>, document.getElementById('root'));

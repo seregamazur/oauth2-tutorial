@@ -7,15 +7,23 @@ resource:
 spring:
   data:
     mongodb:
-      host: 172.17.0.2
+      host: localhost
       port: 27017
-      database: mydatabase
+      database: oauth2_tutorial
+
+security:
+  authentication:
+    jwt:
+      base64-secret: NjI5MTliZTU1YWUyNjE2N2ZlOThiMzBmYzk3N2M4ZGQxZDRiNWIzMzZkZTI0NDgwNTY2ZjFmNDMwN2YyZThiODNjOGM2YmRlMjJhYWJjYTU2NTcxYWIxMTllYmNlMDNjZmIyOTM3MDA4YTkxZTE1NmEwYmQ3ZDdiZDg4YTY3ODc=
+      # Token is valid 24 hours
+      token-validity-in-seconds: 600
+      token-validity-in-seconds-for-remember-me: 2592000
 
 google:
   client-id: ${GOOGLE_CLIENT_ID}
   client-secret: ${GOOGLE_CLIENT_SECRET}
   redirect-uri: http://localhost:8081/oauth2/authorization/google/callback
-  auth-uri: https://accounts.google.com/o/oauth2/v2/auth?client_id=${google.client-id}&scope=profile+email&redirect_uri=${google.redirect-uri}&response_type=code&redirect_url=${google.redirect-uri}
+  auth-uri: https://accounts.google.com/o/oauth2/v2/auth?client_id=${google.client-id}&scope=openid+profile+email&redirect_uri=${google.redirect-uri}&response_type=code&redirect_url=${google.redirect-uri}
   access-uri: https://www.googleapis.com/oauth2/v4/token
   user-info: https://www.googleapis.com/oauth2/v3/userinfo
 
@@ -37,6 +45,6 @@ okta:
   client-id: ${OKTA_CLIENT_ID}
   client-secret: ${OKTA_CLIENT_SECRET}
   redirect-uri: http://localhost:8081/oauth2/authorization/okta/callback
-#  TODO why do we need it here
+  #  TODO why do we need it here
   auth-uri: https://dev-12266902.okta.com/oauth2/default/v1/authorize?client_id=${okta.client-id}&scope=openid%20email%20profile&redirect_uri=${okta.redirect-uri}&response_type=code&redirect_url=${okta.redirect-uri}&state=F24234FAC
   access-uri: https://dev-12266902.okta.com/oauth2/default/v1/token

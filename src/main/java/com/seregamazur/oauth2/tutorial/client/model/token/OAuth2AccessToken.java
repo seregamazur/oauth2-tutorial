@@ -32,6 +32,8 @@ public class OAuth2AccessToken implements Serializable {
     private String tokenType;
     @JsonProperty("access_token")
     private String tokenValue;
+    @JsonProperty("id_token")
+    private String idTokenValue;
     @JsonProperty("issued_at")
     private Instant issuedAt;
     @JsonProperty("expires_at")

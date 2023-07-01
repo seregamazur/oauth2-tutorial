@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.seregamazur.oauth2.tutorial.client.model.google.GoogleOAuth2Client;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserRepository;
@@ -16,14 +15,12 @@ import com.seregamazur.oauth2.tutorial.security.jwt.TokenProvider;
 @Service
 public class GoogleService {
 
-    private final GoogleOAuth2Client googleClient;
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
 
-    public GoogleService(GoogleOAuth2Client googleClient, UserRepository userRepository,
+    public GoogleService(UserRepository userRepository,
         TokenProvider tokenProvider, GoogleIdTokenVerifier googleIdTokenVerifier) {
-        this.googleClient = googleClient;
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
         this.googleIdTokenVerifier = googleIdTokenVerifier;

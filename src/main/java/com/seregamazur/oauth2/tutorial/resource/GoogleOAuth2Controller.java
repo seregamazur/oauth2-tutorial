@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.seregamazur.oauth2.tutorial.client.model.google.GoogleOAuth2Client;
-import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
+import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
 import com.seregamazur.oauth2.tutorial.service.GoogleService;
 
@@ -38,8 +38,8 @@ public class GoogleOAuth2Controller {
     // We send a request with authorization code to receive access code
     @GetMapping("/oauth2/authorization/google/callback")
     public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
-        OAuth2AccessToken oAuth2AccessToken = googleClient.convertAuthCodeToAccessToken(code);
-        JWTToken token = googleService.createJwtFromAccessToken(oAuth2AccessToken);
+        OAuth2TokenSet oAuth2TokenSet = googleClient.convertAuthCodeToAccessToken(code);
+        JWTToken token = googleService.createJwtFromAccessToken(oAuth2TokenSet);
         return new RedirectView(location + "?token=" + token.getValue());
     }
 

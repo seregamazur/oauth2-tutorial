@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
+import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 
 @Component
 public class OktaOAuth2ClientImpl implements OktaOAuth2Client {
@@ -23,7 +23,7 @@ public class OktaOAuth2ClientImpl implements OktaOAuth2Client {
     private OktaClientData clientAuthorizationData;
 
     @Override
-    public OAuth2AccessToken convertAuthCodeToAccessToken(String authorizationCode) {
+    public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
         return clientAuthorization.getAccessToken(Map.of("client_id", clientId, "client_secret", clientSecret, "redirect_uri", redirectUri,
             "code", authorizationCode, "grant_type", "authorization_code"));
     }

@@ -1,22 +1,15 @@
 package com.seregamazur.oauth2.tutorial.resource;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-import com.seregamazur.oauth2.tutorial.TokensCache;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedClient;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedClientId;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedData;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
 import com.seregamazur.oauth2.tutorial.client.model.okta.OktaOAuth2Client;
-import com.seregamazur.oauth2.tutorial.client.model.okta.OktaUserInfo;
-import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
+import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
+import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
+import com.seregamazur.oauth2.tutorial.service.OktaService;
 
 @Controller
 public class OktaOAuth2Controller {
@@ -28,9 +21,11 @@ public class OktaOAuth2Controller {
     private String location;
 
     private final OktaOAuth2Client oktaClient;
+    private final OktaService oktaService;
 
-    public OktaOAuth2Controller(OktaOAuth2Client oktaClient) {
+    public OktaOAuth2Controller(OktaOAuth2Client oktaClient, OktaService oktaService) {
         this.oktaClient = oktaClient;
+        this.oktaService = oktaService;
     }
 
     //1. UI goes to this endpoint and we redirect user to github consent
@@ -42,14 +37,9 @@ public class OktaOAuth2Controller {
     //2. User got logged in and redirected to this endpoint with authorization code
     // We send a request with authorization code to receive access code
     @GetMapping("/oauth2/authorization/okta/callback")
-    public ModelAndView receiveCallbackAuthorization(@RequestParam("code") String code) {
-        OAuth2AccessToken oAuth2AccessToken = oktaClient.convertAuthCodeToAccessToken(code);
-        TokensCache.add(new OAuth2AuthorizedData(
-            new OAuth2AuthorizedClientId(OAuth2ClientId.OKTA, "principal"),
-            new OAuth2AuthorizedClient(oAuth2AccessToken, null)));
-        Optional<OAuth2AuthorizedClient> authorizedClient = TokensCache.findByClientId(OAuth2ClientId.OKTA);
-        OktaUserInfo oktaUserInfo = authorizedClient.map(client -> oktaClient.getUserInfo(
-            "Bearer " + client.getAccessToken().getTokenValue())).orElse(null);
-        return new ModelAndView("redirect:" + location, "info", oktaUserInfo);
+    public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
+        OAuth2TokenSet oAuth2TokenSet = oktaClient.convertAuthCodeToAccessToken(code);
+        JWTToken token = oktaService.createJwtFromAccessToken(oAuth2TokenSet);
+        return new RedirectView(location + "?token=" + token.getValue());
     }
 }

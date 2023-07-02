@@ -31,7 +31,7 @@ github:
   client-id: ${GITHUB_CLIENT_ID}
   client-secret: ${GITHUB_CLIENT_SECRET}
   redirect-uri: http://localhost:8081/oauth2/authorization/github/callback
-  auth-uri: https://github.com/login/oauth/authorize?client_id=${github.client-id}&response_type=code&redirect_url=${github.redirect-uri}
+  auth-uri: https://github.com/login/oauth/authorize?client_id=${github.client-id}&scope=user:email+openid+profile+email&response_type=code&redirect_url=${github.redirect-uri}
   access-uri: https://github.com/login/oauth/access_token
 
 facebook:
@@ -42,6 +42,8 @@ facebook:
   access-uri: https://graph.facebook.com/v16.0/oauth/access_token?client_id=${facebook.client-id}&client_secret=${facebook.client-secret}&code={code-parameter}
 
 okta:
+  issuer: https://dev-12266902.okta.com/oauth2/default
+  audience: api://default
   client-id: ${OKTA_CLIENT_ID}
   client-secret: ${OKTA_CLIENT_SECRET}
   redirect-uri: http://localhost:8081/oauth2/authorization/okta/callback

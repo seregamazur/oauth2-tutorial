@@ -12,17 +12,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class OAuth2AccessToken implements Serializable {
+public class OAuth2TokenSet implements Serializable {
 
-    public OAuth2AccessToken(String tokenType, String tokenValue, String scope) {
+    public OAuth2TokenSet(String tokenType, String accessToken, String scope) {
         this.tokenType = tokenType;
-        this.tokenValue = tokenValue;
+        this.accessToken = accessToken;
         this.scope = scope;
     }
 
-    public OAuth2AccessToken(String tokenType, String tokenValue, Instant issuedAt, Instant expiresAt, String scope) {
+    public OAuth2TokenSet(String tokenType, String accessToken, Instant issuedAt, Instant expiresAt, String scope) {
         this.tokenType = tokenType;
-        this.tokenValue = tokenValue;
+        this.accessToken = accessToken;
         this.issuedAt = issuedAt;
         this.expiresAt = expiresAt;
         this.scope = scope;
@@ -31,9 +31,11 @@ public class OAuth2AccessToken implements Serializable {
     @JsonProperty("token_type")
     private String tokenType;
     @JsonProperty("access_token")
-    private String tokenValue;
+    private String accessToken;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
     @JsonProperty("id_token")
-    private String idTokenValue;
+    private String idToken;
     @JsonProperty("issued_at")
     private Instant issuedAt;
     @JsonProperty("expires_at")

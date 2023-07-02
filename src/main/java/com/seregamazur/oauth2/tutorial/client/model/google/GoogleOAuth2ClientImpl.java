@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenRequest;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2GrantType;
-import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
+import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 
 @Component
 public class GoogleOAuth2ClientImpl implements GoogleOAuth2Client {
@@ -23,7 +23,7 @@ public class GoogleOAuth2ClientImpl implements GoogleOAuth2Client {
     private GoogleClientData clientAuthorizationData;
 
     @Override
-    public OAuth2AccessToken convertAuthCodeToAccessToken(String authorizationCode) {
+    public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
         return clientAuthorization.getAccessToken(
             new OAuth2AccessTokenRequest(clientId, clientSecret, authorizationCode, redirectUri, OAuth2GrantType.AUTHORIZATION_CODE.getValue()));
     }

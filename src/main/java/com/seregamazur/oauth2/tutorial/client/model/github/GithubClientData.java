@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "githubClientData", url = "https://api.github.com")
 public interface GithubClientData {
 
-    @GetMapping(value = "/user",
+    @GetMapping(value = "/user?fields=id,name,email",
         headers = { "Content-Type=application/json", "Accept=application/json" })
     GithubUserInfo getUserInfo(@RequestHeader("Authorization") String accessToken);
 }

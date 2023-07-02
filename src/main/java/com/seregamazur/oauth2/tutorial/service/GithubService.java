@@ -3,8 +3,8 @@ package com.seregamazur.oauth2.tutorial.service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.seregamazur.oauth2.tutorial.client.model.github.GithubClientData;
+import com.seregamazur.oauth2.tutorial.client.model.github.GithubUserInfo;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserRepository;
@@ -13,31 +13,30 @@ import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
 import com.seregamazur.oauth2.tutorial.security.jwt.TokenProvider;
 
 @Service
-public class GoogleService {
+public class GithubService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final GoogleIdTokenVerifier googleIdTokenVerifier;
+    private final GithubClientData githubClientData;
 
-    public GoogleService(UserRepository userRepository,
-        TokenProvider tokenProvider, GoogleIdTokenVerifier googleIdTokenVerifier) {
+    public GithubService(UserRepository userRepository,
+        TokenProvider tokenProvider, GithubClientData githubClientData) {
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
-        this.googleIdTokenVerifier = googleIdTokenVerifier;
+        this.githubClientData = githubClientData;
     }
 
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
-        GoogleIdToken idToken;
+        GithubUserInfo userInfo;
         try {
-            idToken = googleIdTokenVerifier.verify(oAuth2TokenSet.getIdToken());
+            userInfo = githubClientData.getUserInfo("Bearer " + oAuth2TokenSet.getAccessToken());
         } catch (Exception e) {
             throw new AccessTokenVerificationException(e);
         }
-        GoogleIdToken.Payload payload = idToken.getPayload();
-        User user = userRepository.findByEmail(payload.getEmail())
+        User user = userRepository.findByEmail(userInfo.getEmail())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwt = tokenProvider.createToken(user, oAuth2TokenSet.getIdToken(),
-            oAuth2TokenSet.getScope(), "google", true);
+            oAuth2TokenSet.getScope(), "github", true);
         return new JWTToken(jwt);
     }
 

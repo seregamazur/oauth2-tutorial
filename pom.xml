@@ -124,6 +124,17 @@
             <artifactId>nimbus-jose-jwt</artifactId>
             <version>9.8</version>
         </dependency>
+        <dependency>
+            <groupId>com.okta.jwt</groupId>
+            <artifactId>okta-jwt-verifier</artifactId>
+            <version>0.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.okta.jwt</groupId>
+            <artifactId>okta-jwt-verifier-impl</artifactId>
+            <version>0.5.1</version>
+            <scope>runtime</scope>
+        </dependency>
 
 
     </dependencies>

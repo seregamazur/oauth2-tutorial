@@ -3,8 +3,9 @@ package com.seregamazur.oauth2.tutorial.service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.okta.jwt.AccessTokenVerifier;
+import com.okta.jwt.Jwt;
+import com.okta.jwt.JwtVerificationException;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserRepository;
@@ -13,32 +14,32 @@ import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
 import com.seregamazur.oauth2.tutorial.security.jwt.TokenProvider;
 
 @Service
-public class GoogleService {
+public class OktaService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final GoogleIdTokenVerifier googleIdTokenVerifier;
+    private final AccessTokenVerifier accessTokenVerifier;
 
-    public GoogleService(UserRepository userRepository,
-        TokenProvider tokenProvider, GoogleIdTokenVerifier googleIdTokenVerifier) {
+    public OktaService(UserRepository userRepository,
+        TokenProvider tokenProvider, AccessTokenVerifier accessTokenVerifier) {
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
-        this.googleIdTokenVerifier = googleIdTokenVerifier;
+        this.accessTokenVerifier = accessTokenVerifier;
     }
 
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
-        GoogleIdToken idToken;
+        Jwt decode;
         try {
-            idToken = googleIdTokenVerifier.verify(oAuth2TokenSet.getIdToken());
-        } catch (Exception e) {
+            decode = accessTokenVerifier.decode(oAuth2TokenSet.getAccessToken());
+        } catch (JwtVerificationException e) {
             throw new AccessTokenVerificationException(e);
         }
-        GoogleIdToken.Payload payload = idToken.getPayload();
-        User user = userRepository.findByEmail(payload.getEmail())
+        String sub = (String) decode.getClaims().get("sub");
+
+        User user = userRepository.findByEmail(sub)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwt = tokenProvider.createToken(user, oAuth2TokenSet.getIdToken(),
-            oAuth2TokenSet.getScope(), "google", true);
+            oAuth2TokenSet.getScope(), "okta", true);
         return new JWTToken(jwt);
     }
-
 }

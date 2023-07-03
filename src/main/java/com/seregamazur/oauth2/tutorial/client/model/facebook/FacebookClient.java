@@ -17,8 +17,4 @@ public interface FacebookClient {
         @PathVariable("redirectUri") String redirectUri,
         @PathVariable("authCode") String authCode);
 
-    @GetMapping(value = "v14.0/me?fields=id,name,email&access_token={accessToken}",
-        headers = { "Content-Type=application/json", "Accept=application/json" })
-    IdToken verifyToken(@PathVariable("accessToken") String accessToken);
-
 }

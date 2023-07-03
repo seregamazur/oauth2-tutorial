@@ -3,7 +3,7 @@ package com.seregamazur.oauth2.tutorial.service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookClient;
+import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookClientData;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserRepository;
@@ -16,10 +16,10 @@ public class FacebookService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final FacebookClient facebookClient;
+    private final FacebookClientData facebookClient;
 
     public FacebookService(UserRepository userRepository,
-        TokenProvider tokenProvider, FacebookClient facebookClient) {
+        TokenProvider tokenProvider, FacebookClientData facebookClient) {
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
         this.facebookClient = facebookClient;

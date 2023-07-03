@@ -27,13 +27,13 @@ public class GithubService {
     }
 
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
-        GithubUserInfo userInfo;
+        IdToken idToken;
         try {
-            userInfo = githubClientData.getUserInfo("Bearer " + oAuth2TokenSet.getAccessToken());
+            idToken = githubClientData.getUserInfo("Bearer " + oAuth2TokenSet.getAccessToken());
         } catch (Exception e) {
             throw new AccessTokenVerificationException(e);
         }
-        User user = userRepository.findByEmail(userInfo.getEmail())
+        User user = userRepository.findByEmail(idToken.getEmail())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwt = tokenProvider.createToken(user, oAuth2TokenSet.getIdToken(),
             oAuth2TokenSet.getScope(), "github", true);

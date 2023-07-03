@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenRequest;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2GrantType;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
+import com.seregamazur.oauth2.tutorial.service.IdToken;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +34,7 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
     }
 
     @Override
-    public GithubUserInfo getUserInfo(String accessToken) {
+    public IdToken getUserInfo(String accessToken) {
         return githubClientData.getUserInfo(accessToken);
     }
 

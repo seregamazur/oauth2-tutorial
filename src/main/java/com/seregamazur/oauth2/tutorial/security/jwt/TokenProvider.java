@@ -15,6 +15,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.seregamazur.oauth2.tutorial.crud.User;
+import com.seregamazur.oauth2.tutorial.service.TokenValidationService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -48,11 +49,11 @@ public class TokenProvider {
     private final long tokenValidityInMilliseconds;
 
     private final long tokenValidityInMillisecondsForRememberMe;
-    private final GoogleIdTokenVerifier googleIdTokenVerifier;
+    private final TokenValidationService tokenValidationService;
 
 
     public TokenProvider(@Value("${security.authentication.jwt.base64-secret}") String jwtBase64Secret,
-        GoogleIdTokenVerifier tokenVerifier) {
+        TokenValidationService validationService) {
         byte[] keyBytes = new byte[0];
         if (!ObjectUtils.isEmpty(jwtBase64Secret)) {
             LOGGER.debug("Using a Base64-encoded JWT secret key");
@@ -62,7 +63,7 @@ public class TokenProvider {
         jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
         this.tokenValidityInMilliseconds = 1000 * jwtValidityInSeconds;
         this.tokenValidityInMillisecondsForRememberMe = 1000 * jwtValidityInSecondsForRememberMe;
-        this.googleIdTokenVerifier = tokenVerifier;
+        this.tokenValidationService = validationService;
     }
 
     public String createToken(User user, String accessToken, String scopes, String accessTokenProvider, boolean rememberMe) {
@@ -98,18 +99,10 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, token, null);
     }
 
+    //TODO this method called in filter. need to make it general for all oauth
     public boolean validateJWTToken(String jwtToken) {
-        try {
-            Claims claims = jwtParser.parseClaimsJws(jwtToken).getBody();
-            googleIdTokenVerifier.verify((String) claims.get(ACCESS_TOKEN_KEY));
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            LOGGER.info("Invalid JWT token.");
-            LOGGER.trace("Invalid JWT token trace.", e);
-        } catch (GeneralSecurityException | IOException e) {
-            throw new AccessTokenVerificationException(e);
-        }
-        return false;
+        Claims claims = jwtParser.parseClaimsJws(jwtToken).getBody();
+        return tokenValidationService.verifyAccessTokenValid((String) claims.get(ACCESS_TOKEN_KEY));
     }
 
 }

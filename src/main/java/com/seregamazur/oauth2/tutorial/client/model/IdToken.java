@@ -1,4 +1,4 @@
-package com.seregamazur.oauth2.tutorial.service;
+package com.seregamazur.oauth2.tutorial.client.model;
 
 import lombok.Data;
 

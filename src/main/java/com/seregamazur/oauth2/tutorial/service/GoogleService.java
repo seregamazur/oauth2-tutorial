@@ -12,20 +12,32 @@ import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationExcep
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
 import com.seregamazur.oauth2.tutorial.security.jwt.TokenProvider;
 
-@Service
-public class GoogleService {
+import lombok.extern.slf4j.Slf4j;
 
-    private final UserRepository userRepository;
-    private final TokenProvider tokenProvider;
+@Service
+@Slf4j
+public class GoogleService extends TokenValidationService {
+
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
 
     public GoogleService(UserRepository userRepository,
         TokenProvider tokenProvider, GoogleIdTokenVerifier googleIdTokenVerifier) {
-        this.userRepository = userRepository;
-        this.tokenProvider = tokenProvider;
+        super(userRepository, tokenProvider);
         this.googleIdTokenVerifier = googleIdTokenVerifier;
     }
 
+    @Override
+    public boolean verifyAccessTokenValid(String accessToken) {
+        try {
+            googleIdTokenVerifier.verify(accessToken);
+            return true;
+        } catch (Exception e) {
+            log.error("Invalid access_token.", e);
+        }
+        return false;
+    }
+
+    @Override
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
         GoogleIdToken idToken;
         try {

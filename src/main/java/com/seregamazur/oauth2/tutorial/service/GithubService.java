@@ -3,8 +3,8 @@ package com.seregamazur.oauth2.tutorial.service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.seregamazur.oauth2.tutorial.client.model.IdToken;
 import com.seregamazur.oauth2.tutorial.client.model.github.GithubClientData;
-import com.seregamazur.oauth2.tutorial.client.model.github.GithubUserInfo;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserRepository;
@@ -12,24 +12,36 @@ import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationExcep
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
 import com.seregamazur.oauth2.tutorial.security.jwt.TokenProvider;
 
-@Service
-public class GithubService {
+import lombok.extern.slf4j.Slf4j;
 
-    private final UserRepository userRepository;
-    private final TokenProvider tokenProvider;
+@Service
+@Slf4j
+public class GithubService extends TokenValidationService {
+
     private final GithubClientData githubClientData;
 
     public GithubService(UserRepository userRepository,
         TokenProvider tokenProvider, GithubClientData githubClientData) {
-        this.userRepository = userRepository;
-        this.tokenProvider = tokenProvider;
+        super(userRepository, tokenProvider);
         this.githubClientData = githubClientData;
     }
 
+    @Override
+    public boolean verifyAccessTokenValid(String accessToken) {
+        try {
+            githubClientData.verifyToken(accessToken);
+            return true;
+        } catch (Exception e) {
+            log.error("Invalid access_token.", e);
+        }
+        return false;
+    }
+
+    @Override
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
         IdToken idToken;
         try {
-            idToken = githubClientData.getUserInfo("Bearer " + oAuth2TokenSet.getAccessToken());
+            idToken = githubClientData.verifyToken("Bearer " + oAuth2TokenSet.getAccessToken());
         } catch (Exception e) {
             throw new AccessTokenVerificationException(e);
         }

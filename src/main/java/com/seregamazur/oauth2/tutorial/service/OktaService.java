@@ -13,20 +13,32 @@ import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationExcep
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
 import com.seregamazur.oauth2.tutorial.security.jwt.TokenProvider;
 
-@Service
-public class OktaService {
+import lombok.extern.slf4j.Slf4j;
 
-    private final UserRepository userRepository;
-    private final TokenProvider tokenProvider;
+@Service
+@Slf4j
+public class OktaService extends TokenValidationService {
+
     private final AccessTokenVerifier accessTokenVerifier;
 
     public OktaService(UserRepository userRepository,
         TokenProvider tokenProvider, AccessTokenVerifier accessTokenVerifier) {
-        this.userRepository = userRepository;
-        this.tokenProvider = tokenProvider;
+        super(userRepository, tokenProvider);
         this.accessTokenVerifier = accessTokenVerifier;
     }
 
+    @Override
+    public boolean verifyAccessTokenValid(String accessToken) {
+        try {
+            accessTokenVerifier.decode(accessToken);
+            return true;
+        } catch (Exception e) {
+            log.error("Invalid access_token.", e);
+        }
+        return false;
+    }
+
+    @Override
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
         Jwt decode;
         try {

@@ -19,8 +19,6 @@ public class OktaOAuth2ClientImpl implements OktaOAuth2Client {
 
     @Autowired
     private OktaClient clientAuthorization;
-    @Autowired
-    private OktaClientData clientAuthorizationData;
 
     @Override
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
@@ -30,6 +28,6 @@ public class OktaOAuth2ClientImpl implements OktaOAuth2Client {
 
     @Override
     public OktaUserInfo getUserInfo(String accessToken) {
-        return clientAuthorizationData.getUserInfo(accessToken);
+        return clientAuthorization.getUserInfo(accessToken);
     }
 }

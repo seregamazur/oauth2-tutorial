@@ -1,7 +1,5 @@
 package com.seregamazur.oauth2.tutorial.security.jwt;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.Date;
 
@@ -13,12 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.service.TokenValidationService;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -102,7 +98,7 @@ public class TokenProvider {
     //TODO this method called in filter. need to make it general for all oauth
     public boolean validateJWTToken(String jwtToken) {
         Claims claims = jwtParser.parseClaimsJws(jwtToken).getBody();
-        return tokenValidationService.verifyAccessTokenValid((String) claims.get(ACCESS_TOKEN_KEY));
+        return tokenValidationService.verifyAndGetSubAccessToken((String) claims.get(ACCESS_TOKEN_KEY));
     }
 
 }

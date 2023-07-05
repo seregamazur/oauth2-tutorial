@@ -17,8 +17,6 @@ public class FacebookOAuth2ClientImpl implements FacebookOAuth2Client {
 
     @Autowired
     private FacebookClient clientAuthorization;
-    @Autowired
-    private FacebookClientData clientAuthorizationData;
 
     @Override
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
@@ -27,6 +25,6 @@ public class FacebookOAuth2ClientImpl implements FacebookOAuth2Client {
 
     @Override
     public FacebookUserInfo getUserInfo(String accessToken) {
-        return clientAuthorizationData.getUserInfo(accessToken);
+        return clientAuthorization.getUserInfo(accessToken);
     }
 }

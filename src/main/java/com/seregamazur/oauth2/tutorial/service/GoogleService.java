@@ -23,7 +23,7 @@ public class GoogleService extends TokenValidationService {
     }
 
     @Override
-    public String verifyAndGetSubAccessToken(String accessToken) {
+    public String verifyAndGetSubFromAccessToken(String accessToken) {
         GoogleIdToken idToken;
         try {
             idToken = googleIdTokenVerifier.verify(accessToken);

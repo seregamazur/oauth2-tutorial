@@ -24,7 +24,7 @@ public class OktaService extends TokenValidationService {
     }
 
     @Override
-    public String verifyAndGetSubAccessToken(String accessToken) {
+    public String verifyAndGetSubFromAccessToken(String accessToken) {
         Jwt decode;
         try {
             decode = accessTokenVerifier.decode(accessToken);

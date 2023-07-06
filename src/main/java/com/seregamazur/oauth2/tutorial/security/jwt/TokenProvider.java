@@ -98,7 +98,7 @@ public class TokenProvider {
     //TODO this method called in filter. need to make it general for all oauth
     public boolean validateJWTToken(String jwtToken) {
         Claims claims = jwtParser.parseClaimsJws(jwtToken).getBody();
-        return tokenValidationService.verifyAndGetSubAccessToken((String) claims.get(ACCESS_TOKEN_KEY));
+        return tokenValidationService.verifyAndGetSubFromAccessToken((String) claims.get(ACCESS_TOKEN_KEY));
     }
 
 }

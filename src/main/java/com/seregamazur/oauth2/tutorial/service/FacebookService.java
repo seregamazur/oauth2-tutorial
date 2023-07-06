@@ -25,7 +25,7 @@ public class FacebookService extends TokenValidationService {
     }
 
     @Override
-    public String verifyAndGetSubAccessToken(String accessToken) {
+    public String verifyAndGetSubFromAccessToken(String accessToken) {
         IdToken idToken;
         try {
             idToken = facebookClient.verifyToken(accessToken);

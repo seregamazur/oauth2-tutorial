@@ -19,7 +19,7 @@ public abstract class TokenValidationService {
     }
 
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
-        String sub = verifyAndGetSubAccessToken(oAuth2TokenSet.getAccessToken());
+        String sub = verifyAndGetSubFromAccessToken(oAuth2TokenSet.getAccessToken());
         User user = userRepository.findByEmail(sub)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwt = tokenProvider.createToken(user, oAuth2TokenSet.getIdToken(),
@@ -27,7 +27,7 @@ public abstract class TokenValidationService {
         return new JWTToken(jwt);
     }
 
-    public abstract String verifyAndGetSubAccessToken(String accessToken);
+    public abstract String verifyAndGetSubFromAccessToken(String accessToken);
 
     public abstract boolean verifyAccessToken(String accessToken);
 

@@ -23,7 +23,7 @@ public class GithubService extends TokenValidationService {
     }
 
     @Override
-    public String verifyAndGetSubAccessToken(String accessToken) {
+    public String verifyAndGetSubFromAccessToken(String accessToken) {
         IdToken idToken;
         try {
             idToken = githubClientData.verifyToken("Bearer " + accessToken);

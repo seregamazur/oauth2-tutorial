@@ -1,10 +1,10 @@
 package com.seregamazur.oauth2.tutorial.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.okta.jwt.AccessTokenVerifier;
-import com.okta.jwt.Jwt;
-import com.okta.jwt.JwtVerificationException;
+import com.seregamazur.oauth2.tutorial.client.model.IdToken;
+import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookClient;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationException;
 
@@ -12,29 +12,30 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class OktaService implements TokenValidationService {
+public class FacebookTokenVerifier implements TokenVerifier {
 
-    private final AccessTokenVerifier accessTokenVerifier;
+    private final FacebookClient facebookClient;
 
-    public OktaService(AccessTokenVerifier accessTokenVerifier) {
-        this.accessTokenVerifier = accessTokenVerifier;
+    @Autowired
+    public FacebookTokenVerifier(FacebookClient facebookClient) {
+        this.facebookClient = facebookClient;
     }
 
     @Override
     public String verifyAndGetSubFromOauthToken(OAuth2TokenSet tokenSet) {
-        Jwt decode;
+        IdToken idToken;
         try {
-            decode = accessTokenVerifier.decode(tokenSet.getAccessToken());
-        } catch (JwtVerificationException e) {
+            idToken = facebookClient.verifyToken(tokenSet.getAccessToken());
+        } catch (Exception e) {
             throw new AccessTokenVerificationException(e);
         }
-        return (String) decode.getClaims().get("sub");
+        return idToken.getEmail();
     }
 
     @Override
     public boolean verifyOAuthToken(String token) {
         try {
-            accessTokenVerifier.decode(token);
+            facebookClient.verifyToken(token);
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

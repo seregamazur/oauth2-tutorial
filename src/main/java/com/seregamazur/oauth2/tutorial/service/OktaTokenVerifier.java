@@ -2,8 +2,9 @@ package com.seregamazur.oauth2.tutorial.service;
 
 import org.springframework.stereotype.Service;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.okta.jwt.AccessTokenVerifier;
+import com.okta.jwt.Jwt;
+import com.okta.jwt.JwtVerificationException;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationException;
 
@@ -11,35 +12,34 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class GoogleService implements TokenValidationService {
+public class OktaTokenVerifier implements TokenVerifier {
 
-    private final GoogleIdTokenVerifier googleIdTokenVerifier;
+    private final AccessTokenVerifier accessTokenVerifier;
 
-    public GoogleService(GoogleIdTokenVerifier googleIdTokenVerifier) {
-        this.googleIdTokenVerifier = googleIdTokenVerifier;
+    public OktaTokenVerifier(AccessTokenVerifier accessTokenVerifier) {
+        this.accessTokenVerifier = accessTokenVerifier;
     }
 
     @Override
     public String verifyAndGetSubFromOauthToken(OAuth2TokenSet tokenSet) {
-        GoogleIdToken idToken;
+        Jwt decode;
         try {
-            idToken = googleIdTokenVerifier.verify(tokenSet.getIdToken());
-        } catch (Exception e) {
+            decode = accessTokenVerifier.decode(tokenSet.getAccessToken());
+        } catch (JwtVerificationException e) {
             throw new AccessTokenVerificationException(e);
         }
-        return idToken.getPayload().getEmail();
+        return (String) decode.getClaims().get("sub");
     }
 
     @Override
     public boolean verifyOAuthToken(String token) {
         try {
-            googleIdTokenVerifier.verify(token);
+            accessTokenVerifier.decode(token);
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);
         }
         return false;
     }
-
 
 }

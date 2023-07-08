@@ -2,8 +2,8 @@ package com.seregamazur.oauth2.tutorial.service;
 
 import org.springframework.stereotype.Service;
 
-import com.seregamazur.oauth2.tutorial.client.model.IdToken;
-import com.seregamazur.oauth2.tutorial.client.model.github.GithubClientData;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationException;
 
@@ -11,29 +11,29 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class GithubService implements TokenValidationService {
+public class GoogleTokenVerifier implements TokenVerifier {
 
-    private final GithubClientData githubClientData;
+    private final GoogleIdTokenVerifier googleIdTokenVerifier;
 
-    public GithubService(GithubClientData githubClientData) {
-        this.githubClientData = githubClientData;
+    public GoogleTokenVerifier(GoogleIdTokenVerifier googleIdTokenVerifier) {
+        this.googleIdTokenVerifier = googleIdTokenVerifier;
     }
 
     @Override
     public String verifyAndGetSubFromOauthToken(OAuth2TokenSet tokenSet) {
-        IdToken idToken;
+        GoogleIdToken idToken;
         try {
-            idToken = githubClientData.verifyToken("Bearer " + tokenSet.getAccessToken());
+            idToken = googleIdTokenVerifier.verify(tokenSet.getIdToken());
         } catch (Exception e) {
             throw new AccessTokenVerificationException(e);
         }
-        return idToken.getEmail();
+        return idToken.getPayload().getEmail();
     }
 
     @Override
     public boolean verifyOAuthToken(String token) {
         try {
-            githubClientData.verifyToken(token);
+            googleIdTokenVerifier.verify(token);
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

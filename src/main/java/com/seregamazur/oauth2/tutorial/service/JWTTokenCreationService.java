@@ -21,8 +21,8 @@ public class JWTTokenCreationService {
     }
 
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
-        TokenValidationService issuer = tokenProvider.getCorrespondingIssuer(oAuth2TokenSet.getAccessTokenProvider());
-        String sub = issuer.verifyAndGetSubFromOauthToken(oAuth2TokenSet);
+        TokenVerifier tokenVerifier = tokenProvider.getAccessTokenVerifier(oAuth2TokenSet.getAccessTokenProvider());
+        String sub = tokenVerifier.verifyAndGetSubFromOauthToken(oAuth2TokenSet);
         User user = userRepository.findByEmail(sub)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwt = tokenProvider.createToken(user, oAuth2TokenSet.getIdToken(),

@@ -1,10 +1,9 @@
 package com.seregamazur.oauth2.tutorial.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seregamazur.oauth2.tutorial.client.model.IdToken;
-import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookClient;
+import com.seregamazur.oauth2.tutorial.client.model.github.GithubClientData;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationException;
 
@@ -12,20 +11,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class FacebookService implements TokenValidationService {
+public class GithubTokenVerifier implements TokenVerifier {
 
-    private final FacebookClient facebookClient;
+    private final GithubClientData githubClientData;
 
-    @Autowired
-    public FacebookService(FacebookClient facebookClient) {
-        this.facebookClient = facebookClient;
+    public GithubTokenVerifier(GithubClientData githubClientData) {
+        this.githubClientData = githubClientData;
     }
 
     @Override
     public String verifyAndGetSubFromOauthToken(OAuth2TokenSet tokenSet) {
         IdToken idToken;
         try {
-            idToken = facebookClient.verifyToken(tokenSet.getAccessToken());
+            idToken = githubClientData.verifyToken("Bearer " + tokenSet.getAccessToken());
         } catch (Exception e) {
             throw new AccessTokenVerificationException(e);
         }
@@ -35,7 +33,7 @@ public class FacebookService implements TokenValidationService {
     @Override
     public boolean verifyOAuthToken(String token) {
         try {
-            facebookClient.verifyToken(token);
+            githubClientData.verifyToken(token);
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

@@ -13,11 +13,11 @@ import org.springframework.util.ObjectUtils;
 
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
 import com.seregamazur.oauth2.tutorial.crud.User;
-import com.seregamazur.oauth2.tutorial.service.FacebookService;
-import com.seregamazur.oauth2.tutorial.service.GithubService;
-import com.seregamazur.oauth2.tutorial.service.GoogleService;
-import com.seregamazur.oauth2.tutorial.service.OktaService;
-import com.seregamazur.oauth2.tutorial.service.TokenValidationService;
+import com.seregamazur.oauth2.tutorial.service.FacebookTokenVerifier;
+import com.seregamazur.oauth2.tutorial.service.GithubTokenVerifier;
+import com.seregamazur.oauth2.tutorial.service.GoogleTokenVerifier;
+import com.seregamazur.oauth2.tutorial.service.OktaTokenVerifier;
+import com.seregamazur.oauth2.tutorial.service.TokenVerifier;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -50,14 +50,14 @@ public class TokenProvider {
     private final long tokenValidityInMilliseconds;
 
     private final long tokenValidityInMillisecondsForRememberMe;
-    private final GoogleService googleService;
-    private final GithubService githubService;
-    private final FacebookService facebookService;
-    private final OktaService oktaService;
+    private final GoogleTokenVerifier googleTokenValidator;
+    private final GithubTokenVerifier githubTokenValidator;
+    private final FacebookTokenVerifier facebookTokenValidator;
+    private final OktaTokenVerifier oktaTokenValidator;
 
 
     public TokenProvider(@Value("${security.authentication.jwt.base64-secret}") String jwtBase64Secret,
-        GoogleService googleService, GithubService githubService, FacebookService facebookService, OktaService oktaService) {
+        GoogleTokenVerifier googleTokenValidator, GithubTokenVerifier githubTokenValidator, FacebookTokenVerifier facebookTokenValidator, OktaTokenVerifier oktaTokenValidator) {
         byte[] keyBytes = new byte[0];
         if (!ObjectUtils.isEmpty(jwtBase64Secret)) {
             LOGGER.debug("Using a Base64-encoded JWT secret key");
@@ -67,10 +67,10 @@ public class TokenProvider {
         jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
         this.tokenValidityInMilliseconds = 1000 * jwtValidityInSeconds;
         this.tokenValidityInMillisecondsForRememberMe = 1000 * jwtValidityInSecondsForRememberMe;
-        this.googleService = googleService;
-        this.githubService = githubService;
-        this.facebookService = facebookService;
-        this.oktaService = oktaService;
+        this.googleTokenValidator = googleTokenValidator;
+        this.githubTokenValidator = githubTokenValidator;
+        this.facebookTokenValidator = facebookTokenValidator;
+        this.oktaTokenValidator = oktaTokenValidator;
     }
 
     public String createToken(User user, String accessToken, String scopes, OAuth2ClientId accessTokenProvider, boolean rememberMe) {
@@ -110,20 +110,20 @@ public class TokenProvider {
         Claims claims = jwtParser.parseClaimsJws(jwtToken).getBody();
         String accessToken = (String) claims.get(ACCESS_TOKEN_KEY);
         OAuth2ClientId issuer = (OAuth2ClientId) claims.get(ACCESS_TOKEN_PROVIDER);
-        TokenValidationService correspondingIssuer = getCorrespondingIssuer(issuer);
-        return correspondingIssuer.verifyOAuthToken(accessToken);
+        TokenVerifier verifier = getAccessTokenVerifier(issuer);
+        return verifier.verifyOAuthToken(accessToken);
     }
 
-    public TokenValidationService getCorrespondingIssuer(OAuth2ClientId clientId) {
+    public TokenVerifier getAccessTokenVerifier(OAuth2ClientId clientId) {
         switch (clientId) {
             case GOOGLE:
-                return googleService;
+                return googleTokenValidator;
             case FACEBOOK:
-                return facebookService;
+                return facebookTokenValidator;
             case OKTA:
-                return oktaService;
+                return oktaTokenValidator;
             default:
-                return githubService;
+                return githubTokenValidator;
         }
     }
 

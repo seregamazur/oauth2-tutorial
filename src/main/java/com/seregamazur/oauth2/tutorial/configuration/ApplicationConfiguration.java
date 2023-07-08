@@ -26,7 +26,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public AccessTokenVerifier oktaTokenVerifier() {
+    public AccessTokenVerifier oktaAccessTokenVerifier() {
         return JwtVerifiers.accessTokenVerifierBuilder()
             .setIssuer(issuer)
             .setAudience(audience)

@@ -2,7 +2,7 @@ package com.seregamazur.oauth2.tutorial.service;
 
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 
-public interface TokenValidationService {
+public interface TokenVerifier {
 
     boolean verifyOAuthToken(String token);
 

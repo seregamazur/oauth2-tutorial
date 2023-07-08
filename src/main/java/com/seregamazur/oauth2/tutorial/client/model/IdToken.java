@@ -1,10 +1,11 @@
-package com.seregamazur.oauth2.tutorial.client.model.github;
+package com.seregamazur.oauth2.tutorial.client.model;
 
 import lombok.Data;
 
 @Data
-public class GithubUserInfo {
+public class IdToken {
     private String id;
     private String name;
     private String email;
+
 }

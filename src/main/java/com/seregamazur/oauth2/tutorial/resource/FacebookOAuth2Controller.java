@@ -1,22 +1,15 @@
 package com.seregamazur.oauth2.tutorial.resource;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
-import com.seregamazur.oauth2.tutorial.TokensCache;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedClient;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedClientId;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedData;
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
 import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookOAuth2Client;
-import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookUserInfo;
-import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
+import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
+import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
+import com.seregamazur.oauth2.tutorial.service.JWTTokenCreationService;
 
 @Controller
 public class FacebookOAuth2Controller {
@@ -28,30 +21,25 @@ public class FacebookOAuth2Controller {
     private String location;
 
     private final FacebookOAuth2Client metaClient;
+    private final JWTTokenCreationService tokenCreationService;
 
-    public FacebookOAuth2Controller(FacebookOAuth2Client googleClient) {
-        this.metaClient = googleClient;
+    public FacebookOAuth2Controller(FacebookOAuth2Client metaClient, JWTTokenCreationService tokenCreationService) {
+        this.metaClient = metaClient;
+        this.tokenCreationService = tokenCreationService;
     }
 
     //1. UI goes to this endpoint and we redirect user to github consent
     @GetMapping("/oauth2/authorization/facebook")
-    public String redirectToGoogleAuthorization(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("redirectUrl", authorizationUri);
+    public String redirectToGoogleAuthorization() {
         return "redirect:" + authorizationUri;
     }
 
     //2. User got logged in and redirected to this endpoint with authorization code
     // We send a request with authorization code to receive access code
     @GetMapping("/oauth2/authorization/facebook/callback")
-    public ModelAndView receiveCallbackAuthorization(@RequestParam("code") String code) {
-        OAuth2AccessToken oAuth2AccessToken = metaClient.convertAuthCodeToAccessToken(code);
-        TokensCache.add(new OAuth2AuthorizedData(
-            new OAuth2AuthorizedClientId(OAuth2ClientId.FACEBOOK, "principal"),
-            new OAuth2AuthorizedClient(oAuth2AccessToken, null)));
-        Optional<OAuth2AuthorizedClient> authorizedClient = TokensCache.findByClientId(OAuth2ClientId.FACEBOOK);
-        FacebookUserInfo facebookUserInfo = authorizedClient.map(client -> metaClient.getUserInfo(
-            "Bearer " + client.getAccessToken().getTokenValue())).orElse(null);
-        return new ModelAndView("redirect:" + location, "info", facebookUserInfo);
-
+    public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
+        OAuth2TokenSet oAuth2TokenSet = metaClient.convertAuthCodeToAccessToken(code);
+        JWTToken token = tokenCreationService.createJwtFromAccessToken(oAuth2TokenSet);
+        return new RedirectView(location + "?token=" + token.getValue());
     }
 }

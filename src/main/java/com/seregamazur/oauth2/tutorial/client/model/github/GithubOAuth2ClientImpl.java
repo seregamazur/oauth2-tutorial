@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenRequest;
+import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2GrantType;
-import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2AccessToken;
+import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
+import com.seregamazur.oauth2.tutorial.client.model.IdToken;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,14 +29,16 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
     private GithubClientData githubClientData;
 
     @Override
-    public OAuth2AccessToken convertAuthCodeToAccessToken(String authorizationCode) {
-        return clientAuthorization.getAccessToken(
+    public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
+        OAuth2TokenSet accessToken = clientAuthorization.getAccessToken(
             new OAuth2AccessTokenRequest(clientId, clientSecret, authorizationCode, redirectUri, OAuth2GrantType.AUTHORIZATION_CODE.getValue()));
+        accessToken.setAccessTokenProvider(OAuth2ClientId.GITHUB);
+        return accessToken;
     }
 
     @Override
-    public GithubUserInfo getUserInfo(String accessToken) {
-        return githubClientData.getUserInfo(accessToken);
+    public IdToken getUserInfo(String accessToken) {
+        return githubClientData.verifyToken(accessToken);
     }
 
 }

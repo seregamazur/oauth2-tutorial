@@ -9,7 +9,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookOAuth2Client;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
-import com.seregamazur.oauth2.tutorial.service.FacebookService;
+import com.seregamazur.oauth2.tutorial.service.JWTTokenCreationService;
 
 @Controller
 public class FacebookOAuth2Controller {
@@ -21,11 +21,11 @@ public class FacebookOAuth2Controller {
     private String location;
 
     private final FacebookOAuth2Client metaClient;
-    private final FacebookService facebookService;
+    private final JWTTokenCreationService tokenCreationService;
 
-    public FacebookOAuth2Controller(FacebookOAuth2Client metaClient, FacebookService facebookService) {
+    public FacebookOAuth2Controller(FacebookOAuth2Client metaClient, JWTTokenCreationService tokenCreationService) {
         this.metaClient = metaClient;
-        this.facebookService = facebookService;
+        this.tokenCreationService = tokenCreationService;
     }
 
     //1. UI goes to this endpoint and we redirect user to github consent
@@ -39,7 +39,7 @@ public class FacebookOAuth2Controller {
     @GetMapping("/oauth2/authorization/facebook/callback")
     public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
         OAuth2TokenSet oAuth2TokenSet = metaClient.convertAuthCodeToAccessToken(code);
-        JWTToken token = facebookService.createJwtFromAccessToken(oAuth2TokenSet);
+        JWTToken token = tokenCreationService.createJwtFromAccessToken(oAuth2TokenSet);
         return new RedirectView(location + "?token=" + token.getValue());
     }
 }

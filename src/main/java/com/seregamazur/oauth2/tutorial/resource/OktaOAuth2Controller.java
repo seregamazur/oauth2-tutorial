@@ -9,7 +9,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.seregamazur.oauth2.tutorial.client.model.okta.OktaOAuth2Client;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
-import com.seregamazur.oauth2.tutorial.service.OktaService;
+import com.seregamazur.oauth2.tutorial.service.JWTTokenCreationService;
 
 @Controller
 public class OktaOAuth2Controller {
@@ -21,11 +21,11 @@ public class OktaOAuth2Controller {
     private String location;
 
     private final OktaOAuth2Client oktaClient;
-    private final OktaService oktaService;
+    private final JWTTokenCreationService tokenCreationService;
 
-    public OktaOAuth2Controller(OktaOAuth2Client oktaClient, OktaService oktaService) {
+    public OktaOAuth2Controller(OktaOAuth2Client oktaClient, JWTTokenCreationService tokenCreationService) {
         this.oktaClient = oktaClient;
-        this.oktaService = oktaService;
+        this.tokenCreationService = tokenCreationService;
     }
 
     //1. UI goes to this endpoint and we redirect user to github consent
@@ -39,7 +39,7 @@ public class OktaOAuth2Controller {
     @GetMapping("/oauth2/authorization/okta/callback")
     public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
         OAuth2TokenSet oAuth2TokenSet = oktaClient.convertAuthCodeToAccessToken(code);
-        JWTToken token = oktaService.createJwtFromAccessToken(oAuth2TokenSet);
+        JWTToken token = tokenCreationService.createJwtFromAccessToken(oAuth2TokenSet);
         return new RedirectView(location + "?token=" + token.getValue());
     }
 }

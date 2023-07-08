@@ -11,7 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
 import com.seregamazur.oauth2.tutorial.crud.User;
+import com.seregamazur.oauth2.tutorial.service.FacebookService;
+import com.seregamazur.oauth2.tutorial.service.GithubService;
+import com.seregamazur.oauth2.tutorial.service.GoogleService;
+import com.seregamazur.oauth2.tutorial.service.OktaService;
 import com.seregamazur.oauth2.tutorial.service.TokenValidationService;
 
 import io.jsonwebtoken.Claims;
@@ -45,11 +50,14 @@ public class TokenProvider {
     private final long tokenValidityInMilliseconds;
 
     private final long tokenValidityInMillisecondsForRememberMe;
-    private final TokenValidationService tokenValidationService;
+    private final GoogleService googleService;
+    private final GithubService githubService;
+    private final FacebookService facebookService;
+    private final OktaService oktaService;
 
 
     public TokenProvider(@Value("${security.authentication.jwt.base64-secret}") String jwtBase64Secret,
-        TokenValidationService validationService) {
+        GoogleService googleService, GithubService githubService, FacebookService facebookService, OktaService oktaService) {
         byte[] keyBytes = new byte[0];
         if (!ObjectUtils.isEmpty(jwtBase64Secret)) {
             LOGGER.debug("Using a Base64-encoded JWT secret key");
@@ -59,10 +67,13 @@ public class TokenProvider {
         jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
         this.tokenValidityInMilliseconds = 1000 * jwtValidityInSeconds;
         this.tokenValidityInMillisecondsForRememberMe = 1000 * jwtValidityInSecondsForRememberMe;
-        this.tokenValidationService = validationService;
+        this.googleService = googleService;
+        this.githubService = githubService;
+        this.facebookService = facebookService;
+        this.oktaService = oktaService;
     }
 
-    public String createToken(User user, String accessToken, String scopes, String accessTokenProvider, boolean rememberMe) {
+    public String createToken(User user, String accessToken, String scopes, OAuth2ClientId accessTokenProvider, boolean rememberMe) {
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
@@ -95,10 +106,25 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, token, null);
     }
 
-    //TODO this method called in filter. need to make it general for all oauth
     public boolean validateJWTToken(String jwtToken) {
         Claims claims = jwtParser.parseClaimsJws(jwtToken).getBody();
-        return tokenValidationService.verifyAndGetSubFromAccessToken((String) claims.get(ACCESS_TOKEN_KEY));
+        String accessToken = (String) claims.get(ACCESS_TOKEN_KEY);
+        OAuth2ClientId issuer = (OAuth2ClientId) claims.get(ACCESS_TOKEN_PROVIDER);
+        TokenValidationService correspondingIssuer = getCorrespondingIssuer(issuer);
+        return correspondingIssuer.verifyOAuthToken(accessToken);
+    }
+
+    public TokenValidationService getCorrespondingIssuer(OAuth2ClientId clientId) {
+        switch (clientId) {
+            case GOOGLE:
+                return googleService;
+            case FACEBOOK:
+                return facebookService;
+            case OKTA:
+                return oktaService;
+            default:
+                return githubService;
+        }
     }
 
 }

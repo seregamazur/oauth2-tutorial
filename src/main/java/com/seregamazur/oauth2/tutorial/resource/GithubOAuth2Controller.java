@@ -10,7 +10,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.seregamazur.oauth2.tutorial.client.model.github.GithubOAuth2Client;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
-import com.seregamazur.oauth2.tutorial.service.GithubService;
+import com.seregamazur.oauth2.tutorial.service.JWTTokenCreationService;
 
 @Controller
 public class GithubOAuth2Controller {
@@ -22,11 +22,11 @@ public class GithubOAuth2Controller {
     private String location;
 
     private final GithubOAuth2Client githubClient;
-    private final GithubService githubService;
+    private final JWTTokenCreationService tokenCreationService;
 
-    public GithubOAuth2Controller(GithubOAuth2Client githubClient, GithubService githubService) {
+    public GithubOAuth2Controller(GithubOAuth2Client githubClient, JWTTokenCreationService tokenCreationService) {
         this.githubClient = githubClient;
-        this.githubService = githubService;
+        this.tokenCreationService = tokenCreationService;
     }
 
     @GetMapping("/oauth2/authorization/github")
@@ -37,7 +37,7 @@ public class GithubOAuth2Controller {
     @GetMapping("/oauth2/authorization/github/callback")
     public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
         OAuth2TokenSet oAuth2TokenSet = githubClient.convertAuthCodeToAccessToken(code);
-        JWTToken token = githubService.createJwtFromAccessToken(oAuth2TokenSet);
+        JWTToken token = tokenCreationService.createJwtFromAccessToken(oAuth2TokenSet);
         return new RedirectView(location + "?token=" + token.getValue());
     }
 

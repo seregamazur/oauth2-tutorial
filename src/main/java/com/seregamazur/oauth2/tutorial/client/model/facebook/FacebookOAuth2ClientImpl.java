@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 
 @Component
@@ -20,7 +21,9 @@ public class FacebookOAuth2ClientImpl implements FacebookOAuth2Client {
 
     @Override
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
-        return clientAuthorization.getAccessToken(clientId, clientSecret, redirectUri, authorizationCode);
+        OAuth2TokenSet accessToken = clientAuthorization.getAccessToken(clientId, clientSecret, redirectUri, authorizationCode);
+        accessToken.setAccessTokenProvider(OAuth2ClientId.FACEBOOK);
+        return accessToken;
     }
 
     @Override

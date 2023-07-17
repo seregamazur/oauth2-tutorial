@@ -3,21 +3,25 @@ package com.seregamazur.oauth2.tutorial.crud;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Controller
+@Controller("/api/user")
 public class UserController {
     private final UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @PostMapping
+    public UserDTO createUser(@RequestBody UserDTO userDto) {
+        return userService.createUser(userDto);
     }
 
     @GetMapping

@@ -73,7 +73,7 @@ public class TokenProvider {
         this.oktaTokenValidator = oktaTokenValidator;
     }
 
-    public String createToken(User user, String accessToken, String scopes, OAuth2ClientId accessTokenProvider, boolean rememberMe) {
+    public String createTokenForOAuth2(User user, String accessToken, String scopes, OAuth2ClientId accessTokenProvider, boolean rememberMe) {
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
@@ -91,6 +91,25 @@ public class TokenProvider {
             .claim(USER_FULL_NAME_KEY, user.getFirstName() + ", " + user.getLastName())
             .claim(ACCESS_TOKEN_KEY, accessToken)
             .claim(OAUTH2_SCOPES, scopes)
+            .compact();
+    }
+
+    public String createToken(User user, boolean rememberMe) {
+        long now = (new Date()).getTime();
+        Date validity;
+        if (rememberMe) {
+            validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+        } else {
+            validity = new Date(now + this.tokenValidityInMilliseconds);
+        }
+
+        return Jwts
+            .builder()
+            .setSubject(user.getId())
+            .signWith(key, SignatureAlgorithm.HS512)
+            .setExpiration(validity)
+            .claim(ACCESS_TOKEN_PROVIDER, "INTERNAL")
+            .claim(USER_FULL_NAME_KEY, user.getFirstName() + ", " + user.getLastName())
             .compact();
     }
 

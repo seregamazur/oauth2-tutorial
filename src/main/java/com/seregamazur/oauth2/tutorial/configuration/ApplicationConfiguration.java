@@ -1,14 +1,18 @@
 package com.seregamazur.oauth2.tutorial.configuration;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.okta.jwt.AccessTokenVerifier;
 import com.okta.jwt.JwtVerifiers;
+import com.seregamazur.oauth2.tutorial.mapper.UserMapper;
 
 @Configuration
 public class ApplicationConfiguration implements WebMvcConfigurer {
@@ -42,6 +46,16 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
             .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD")
             .allowedHeaders("*")
             .allowCredentials(true);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserMapper userMapper() {
+        return Mappers.getMapper(UserMapper.class);
     }
 
 }

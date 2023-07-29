@@ -1,22 +1,27 @@
-import React, {useState} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faGoogle, faGithub, faFacebookSquare} from '@fortawesome/free-brands-svg-icons';
-import {faLock} from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from 'react';
+import { Modal, Form, Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle, faGithub, faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 import './LoginPage.css';
-import {useNavigate} from "react-router-dom";
-import {setUserSession} from "../../utils/Common";
+import { useNavigate } from 'react-router-dom';
+import { setUserSession } from '../../utils/Common';
+import SignUpModal from './SignUpModal';
 
 function LoginPage() {
     const navigate = useNavigate();
-
-
+    const [showModal, setShowModal] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
 
-    const openRegister = () => {
-        // Add your register logic here
+    const openModal = () => {
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
     };
 
     const handleSocialLoginRedirect = async (siteName) => {
@@ -105,7 +110,7 @@ function LoginPage() {
     return (
         <div className="container">
             <h2>Login</h2>
-            <br/>
+            <br />
             <form onSubmit={showPassword ? handlePasswordSubmit : handleLogin}>
                 <label htmlFor="email">Email</label>
                 <input
@@ -144,8 +149,8 @@ function LoginPage() {
                     </>
                 )}
 
-                <input type="submit" value={showPassword ? 'Login' : 'Next'}/>
-                <input type="button" id="register-btn" value="Create account" onClick={openRegister}/>
+                <input type="submit" value={showPassword ? 'Login' : 'Next'} />
+                <input type="button" id="register-btn" value="Create account" onClick={openModal} />
                 <div className="line">
                     <span>OR</span>
                 </div>
@@ -165,6 +170,8 @@ function LoginPage() {
                     <FontAwesomeIcon icon={faLock}/> Sign in with Okta
                 </button>
             </div>
+
+            <SignUpModal showModal={showModal} onClose={closeModal} />
         </div>
     );
 }

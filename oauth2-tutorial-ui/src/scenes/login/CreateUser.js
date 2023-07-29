@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-const UserCreationModal = () => {
-    const [showModal, setShowModal] = useState(false);
+const UserCreationModal = ({ showModal, setShowModal }) => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,15 +16,13 @@ const UserCreationModal = () => {
         setShowModal(false);
     };
 
-    const openModal = () => {
-        setShowModal(true);
+    const closeModal = () => {
+        setShowModal(false);
     };
 
     return (
-        <div>
-            <button onClick={openModal}>Create User</button>
-
-            {showModal && (
+        showModal && (
+            <div className="modal-overlay">
                 <div className="modal">
                     <h2>User Creation</h2>
                     <label>
@@ -52,13 +49,13 @@ const UserCreationModal = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </label>
-                    <div>
+                    <div className="modal-buttons">
                         <button onClick={handleCreateUser}>Create</button>
-                        <button onClick={() => setShowModal(false)}>Quit</button>
+                        <button onClick={closeModal}>Quit</button>
                     </div>
                 </div>
-            )}
-        </div>
+            </div>
+        )
     );
 };
 

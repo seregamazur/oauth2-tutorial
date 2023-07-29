@@ -1,0 +1,41 @@
+/* Add this CSS to ensure all input fields have the same size and style */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Add this CSS to center the buttons in the modal */
+.modal-button-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-cancel,
+.btn-register {
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-register {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-cancel {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-register:hover {
+    background-color: #0056b3;
+}
+
+.btn-cancel:hover {
+    background-color: #c82333;
+}

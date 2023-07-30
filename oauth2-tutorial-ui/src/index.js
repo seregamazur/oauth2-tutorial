@@ -13,6 +13,7 @@ ReactDOM.render(
             <Routes>
                 <Route index element={<App/>}/>
                 <Route path="login" element={<LoginPage/>}/>
+                <Route path="register" element={<LoginPage/>}/>
                 <Route path="dashboard" element={<Dashboard/>}/>
                 <Route path="calendar" element={<Calendar/>}/>
                 <Route path="redirect" element={<OAuth2Token/>}/>

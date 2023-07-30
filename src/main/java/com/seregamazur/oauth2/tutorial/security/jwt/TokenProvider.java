@@ -13,6 +13,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
 import com.seregamazur.oauth2.tutorial.crud.User;
+import com.seregamazur.oauth2.tutorial.crud.UserDTO;
 import com.seregamazur.oauth2.tutorial.service.FacebookTokenVerifier;
 import com.seregamazur.oauth2.tutorial.service.GithubTokenVerifier;
 import com.seregamazur.oauth2.tutorial.service.GoogleTokenVerifier;
@@ -94,7 +95,7 @@ public class TokenProvider {
             .compact();
     }
 
-    public String createToken(User user, boolean rememberMe) {
+    public String createToken(UserDTO user, boolean rememberMe) {
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {

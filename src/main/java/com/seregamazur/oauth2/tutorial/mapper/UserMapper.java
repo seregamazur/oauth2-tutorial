@@ -1,5 +1,7 @@
 package com.seregamazur.oauth2.tutorial.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -13,6 +15,10 @@ public interface UserMapper extends EntityMapper<UserDTO, User> {
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     UserDTO toDto(User s);
+
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "lastModifiedDate", ignore = true)
+    List<UserDTO> toDto(List<User> s);
 
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)

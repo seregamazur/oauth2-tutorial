@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faGithub, faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +14,7 @@ function LoginPage() {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const openModal = () => {
         setShowModal(true);
@@ -61,6 +61,9 @@ function LoginPage() {
 
             if (response.ok) {
                 setShowPassword(true);
+                setErrorMessage('');
+            } else if (response.status === 404) {
+                setErrorMessage('No user found with this email.');
             } else {
                 // Handle login error here
                 console.error('Login failed');
@@ -122,6 +125,7 @@ function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
 
                 {showPassword && (
                     <>

@@ -20,20 +20,17 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return userMapper.toDto(users);
     }
 
-    public Optional<User> getUserById(String id) {
-        return userRepository.findById(id);
+    public Optional<UserDTO> getUserById(String id) {
+        return userRepository.findById(id).map(userMapper::toDto);
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+    public Optional<UserDTO> getUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(userMapper::toDto);
     }
 
     public UserDTO createUser(UserDTO userDTO) {
@@ -44,11 +41,12 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public User updateUser(String id, User user) {
+    public UserDTO updateUser(String id, User user) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             user.setId(existingUser.get().getId());
-            return userRepository.save(user);
+            User updatedUser = userRepository.save(user);
+            return userMapper.toDto(updatedUser);
         } else {
             return null;
         }

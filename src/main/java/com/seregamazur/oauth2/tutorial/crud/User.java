@@ -27,4 +27,8 @@ public class User implements Serializable {
     @Indexed(unique = true)
     private String email;
     private String password;
+    private boolean hasGoogleAccount;
+    private boolean hasGithubAccount;
+    private boolean hasOktaAccount;
+    private boolean hasFacebookAccount;
 }

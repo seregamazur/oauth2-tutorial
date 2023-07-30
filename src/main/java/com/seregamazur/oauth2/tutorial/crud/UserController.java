@@ -19,23 +19,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public UserDTO createUser(@RequestBody UserDTO userDto) {
-        return userService.createUser(userDto);
-    }
-
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable String id) {
+    public Optional<UserDTO> getUserById(@PathVariable String id) {
         return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable String id, @RequestBody User user) {
+    public UserDTO updateUser(@PathVariable String id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 

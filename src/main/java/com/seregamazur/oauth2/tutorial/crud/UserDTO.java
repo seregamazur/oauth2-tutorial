@@ -15,4 +15,8 @@ public class UserDTO implements Serializable {
     private String lastName;
     private String email;
     private String password;
+    private boolean hasGoogleAccount;
+    private boolean hasGithubAccount;
+    private boolean hasOktaAccount;
+    private boolean hasFacebookAccount;
 }

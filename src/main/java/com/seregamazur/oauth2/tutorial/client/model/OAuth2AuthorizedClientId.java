@@ -12,6 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OAuth2AuthorizedClientId implements Serializable {
-    private OAuth2ClientId clientRegistrationId;
+    private LoginProvider clientRegistrationId;
     private String principalName;
 }

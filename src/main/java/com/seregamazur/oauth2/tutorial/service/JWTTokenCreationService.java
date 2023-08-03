@@ -1,8 +1,11 @@
 package com.seregamazur.oauth2.tutorial.service;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
+import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserDTO;
@@ -27,12 +30,18 @@ public class JWTTokenCreationService {
     }
 
     public JWTToken createJwtFromAccessToken(OAuth2TokenSet oAuth2TokenSet) {
-        TokenVerifier tokenVerifier = tokenProvider.getAccessTokenVerifier(oAuth2TokenSet.getAccessTokenProvider());
+        LoginProvider loginProvider = oAuth2TokenSet.getLoginProvider();
+        TokenVerifier tokenVerifier = tokenProvider.getAccessTokenVerifier(loginProvider);
         String sub = tokenVerifier.verifyAndGetSubFromOauthToken(oAuth2TokenSet);
-        User user = userRepository.findByEmail(sub)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        String jwt = tokenProvider.createTokenForOAuth2(user, oAuth2TokenSet.getAccessToken(),
-            oAuth2TokenSet.getScope(), oAuth2TokenSet.getAccessTokenProvider(), true);
+        Optional<User> byEmail = userRepository.findByEmail(sub);
+        User userByEmail = byEmail.orElseGet(() -> userRepository.save(new User(sub, List.of(loginProvider))));
+        if (!userByEmail.hasProvider(loginProvider)) {
+            userByEmail.getAuthProviders().add(loginProvider);
+            userByEmail = userRepository.save(userByEmail);
+        }
+
+        String jwt = tokenProvider.createTokenForOAuth2(userByEmail, oAuth2TokenSet.getAccessToken(),
+            oAuth2TokenSet.getScope(), loginProvider, true);
         return new JWTToken(jwt);
     }
 

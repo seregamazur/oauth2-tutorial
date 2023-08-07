@@ -2,6 +2,9 @@ package com.seregamazur.oauth2.tutorial.crud;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
 
 import lombok.Data;
 
@@ -15,4 +18,5 @@ public class UserDTO implements Serializable {
     private String lastName;
     private String email;
     private String password;
+    private List<LoginProvider> authProviders;
 }

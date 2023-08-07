@@ -15,6 +15,9 @@ function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [providers, setProviders] = useState(['GOOGLE', 'GITHUB', 'FACEBOOK', 'OKTA']);
+    const [showProvidersMessage, setShowProvidersMessage] = useState(false);
+    const [showProviders, setShowProviders] = useState(false);
 
     const openModal = () => {
         setShowModal(true);
@@ -22,6 +25,16 @@ function LoginPage() {
 
     const closeModal = () => {
         setShowModal(false);
+    };
+
+    const revertToDefaultState = () => {
+        setEmail(''); // Clear the email input field
+        setShowPassword(false); // Hide password input field
+        setRememberMe(false); // Uncheck remember me checkbox
+        setErrorMessage(''); // Clear error message
+        setShowProviders(false); // Hide OAuth2 login buttons
+        setShowProvidersMessage(false); // Hide the OAuth2 message
+        setProviders(['GOOGLE', 'GITHUB', 'FACEBOOK', 'OKTA']);
     };
 
     const handleSocialLoginRedirect = async (siteName) => {
@@ -60,8 +73,19 @@ function LoginPage() {
             });
 
             if (response.ok) {
-                setShowPassword(true);
-                setErrorMessage('');
+                const responseData = await response.json();
+                const authProviders = responseData.authProviders;
+
+                // Check if Internal provider is missing
+                if (!authProviders.includes('INTERNAL')) {
+                    setShowProvidersMessage(true);
+                    setProviders(authProviders || []);
+                    setShowProviders(authProviders && authProviders.length > 0);
+                } else {
+                    setShowPassword(true);
+                    setErrorMessage('');
+                    // setShowProvidersMessage(false);
+                }
             } else if (response.status === 404) {
                 setErrorMessage('No user found with this email.');
             } else {
@@ -124,7 +148,13 @@ function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={showProviders}
                 />
+                {showProviders && (
+                    <div className="provider-message">
+                        It looks like you've previously logged in using OAuth2.
+                    </div>
+                )}
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
 
                 {showPassword && (
@@ -153,27 +183,41 @@ function LoginPage() {
                     </>
                 )}
 
-                <input type="submit" value={showPassword ? 'Login' : 'Next'} />
-                <input type="button" id="register-btn" value="Create account" onClick={openModal} />
-                <div className="line">
-                    <span>OR</span>
-                </div>
+                {!showProviders && (
+                    <>
+                        <input type="submit" value={showPassword ? 'Login' : 'Next'} />
+                        <input type="button" id="register-btn" value="Create account" onClick={openModal} />
+                        <div className="line">
+                            <span>OR</span>
+                        </div>
+                    </>
+                )}
+
+
             </form>
 
             <div className="social-login">
-                <button className="btn google" onClick={handleGoogleLogin}>
+                {providers.includes("GOOGLE") &&
+                    (<button className="btn google" onClick={handleGoogleLogin} >
                     <FontAwesomeIcon icon={faGoogle}/> Sign in with Google
-                </button>
-                <button className="btn facebook" onClick={handleFacebookLogin}>
+                </button>)}
+
+                {providers.includes("FACEBOOK") && (<button className="btn facebook" onClick={handleFacebookLogin} >
                     <FontAwesomeIcon icon={faFacebookSquare}/> Sign in with Facebook
-                </button>
-                <button className="btn github" onClick={handleGithubLogin}>
+                </button>)}
+
+                {providers.includes("GITHUB") && (<button className="btn github" onClick={handleGithubLogin} >
                     <FontAwesomeIcon icon={faGithub}/> Sign in with GitHub
-                </button>
-                <button className="btn okta" onClick={handleOktaLogin}>
+                </button>)}
+
+                {providers.includes("OKTA") && (<button className="btn okta" onClick={handleOktaLogin} >
                     <FontAwesomeIcon icon={faLock}/> Sign in with Okta
-                </button>
+                </button>)}
+                {showProviders && (
+                    <input type="button" id="back-btn" value="Back" onClick={revertToDefaultState} />
+                )}
             </div>
+
 
             <SignUpModal showModal={showModal} onClose={closeModal} />
         </div>

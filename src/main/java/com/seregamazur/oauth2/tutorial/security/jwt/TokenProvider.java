@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import com.seregamazur.oauth2.tutorial.client.model.OAuth2ClientId;
+import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserDTO;
 import com.seregamazur.oauth2.tutorial.service.FacebookTokenVerifier;
@@ -74,7 +74,7 @@ public class TokenProvider {
         this.oktaTokenValidator = oktaTokenValidator;
     }
 
-    public String createTokenForOAuth2(User user, String accessToken, String scopes, OAuth2ClientId accessTokenProvider, boolean rememberMe) {
+    public String createTokenForOAuth2(User user, String accessToken, String scopes, LoginProvider accessTokenProvider, boolean rememberMe) {
         long now = (new Date()).getTime();
         Date validity;
         if (rememberMe) {
@@ -129,12 +129,12 @@ public class TokenProvider {
     public boolean validateJWTToken(String jwtToken) {
         Claims claims = jwtParser.parseClaimsJws(jwtToken).getBody();
         String accessToken = (String) claims.get(ACCESS_TOKEN_KEY);
-        OAuth2ClientId issuer = (OAuth2ClientId) claims.get(ACCESS_TOKEN_PROVIDER);
+        LoginProvider issuer = (LoginProvider) claims.get(ACCESS_TOKEN_PROVIDER);
         TokenVerifier verifier = getAccessTokenVerifier(issuer);
         return verifier.verifyOAuthToken(accessToken);
     }
 
-    public TokenVerifier getAccessTokenVerifier(OAuth2ClientId clientId) {
+    public TokenVerifier getAccessTokenVerifier(LoginProvider clientId) {
         switch (clientId) {
             case GOOGLE:
                 return googleTokenValidator;

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
 import com.seregamazur.oauth2.tutorial.mapper.UserMapper;
 
 @Service
@@ -37,6 +38,7 @@ public class UserService {
         User user = userMapper.toEntity(userDTO);
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+        user.getAuthProviders().add(LoginProvider.INTERNAL);
         user = userRepository.save(user);
         return userMapper.toDto(user);
     }

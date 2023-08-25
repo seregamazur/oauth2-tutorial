@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AccessTokenRequest;
-import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
+import com.seregamazur.oauth2.tutorial.client.model.OAuth2TokenProvider;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2GrantType;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.client.model.IdToken;
@@ -32,7 +32,7 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
         OAuth2TokenSet accessToken = clientAuthorization.getAccessToken(
             new OAuth2AccessTokenRequest(clientId, clientSecret, authorizationCode, redirectUri, OAuth2GrantType.AUTHORIZATION_CODE.getValue()));
-        accessToken.setLoginProvider(LoginProvider.GITHUB);
+        accessToken.setOAuth2TokenProvider(OAuth2TokenProvider.GITHUB);
         return accessToken;
     }
 

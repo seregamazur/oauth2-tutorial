@@ -1,11 +1,17 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Box, IconButton} from "@mui/material";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import {Box, IconButton, useTheme} from "@mui/material";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Dropdown from "./Dropdown";
 import "./Dropdown.css"
+import {ColorModeContext} from "./theme";
 
-const Topbar = () => {
+const Topbar = ({switchStyleButtonOnly}) => {
+
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const iconButtonRef = useRef(null);
@@ -31,10 +37,17 @@ const Topbar = () => {
     return (
         <>
             <Box display="flex" justifyContent="space-between" p={3}>
+                <IconButton onClick={colorMode.toggleColorMode}>
+                    {theme.palette.mode === "dark" ? (
+                        <DarkModeOutlinedIcon/>
+                    ) : (
+                        <LightModeOutlinedIcon/>
+                    )}
+                </IconButton>
                 <Box>
                 </Box>
 
-                <Box display="flex">
+                {!switchStyleButtonOnly && <Box display="flex">
                     <IconButton>
                         <SettingsOutlinedIcon/>
                     </IconButton>
@@ -44,9 +57,9 @@ const Topbar = () => {
                         </div>
                         <PersonOutlinedIcon/>
                     </IconButton>
-                </Box>
+                </Box>}
             </Box>
-            <div class="line-topbar"></div>
+            {!switchStyleButtonOnly && <div class="line-topbar"></div>}
         </>
     );
 };

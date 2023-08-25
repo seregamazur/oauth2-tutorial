@@ -1,8 +1,16 @@
-import React, {useState} from 'react';
-import {Modal, Form, Button} from 'react-bootstrap';
-import './SignUpModal.css'; // Import the CSS file
+import React, {useContext, useState} from 'react';
+import {Button, Form, Modal} from 'react-bootstrap';
+import './SignUpModal.css';
+import {setUserSession} from "../../utils/Common";
+import {useNavigate} from "react-router-dom";
+import {CssBaseline, ThemeProvider, useTheme} from "@mui/material";
+import {ColorModeContext} from "../global/theme";
 
 const SignUpModal = ({showModal, onClose}) => {
+    const navigate = useNavigate();
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -22,7 +30,7 @@ const SignUpModal = ({showModal, onClose}) => {
             setEmail('');
             setPassword('');
             // Close the modal
-            sendRegisterUser()
+            sendRegisterUser();
         } else {
             // If the form is invalid, trigger the HTML5 form validation messages
             form.reportValidity();
@@ -46,7 +54,13 @@ const SignUpModal = ({showModal, onClose}) => {
             });
 
             if (response.ok) {
+                const responseData = await response.json();
+                const jwtValue = responseData.value;
+                setUserSession(jwtValue);
+                // Handle successful login here
+                console.log('Login successful');
                 onClose();
+                navigate('/dashboard');
             } else {
                 // Handle login error here
                 console.error('Login failed');
@@ -59,66 +73,73 @@ const SignUpModal = ({showModal, onClose}) => {
 
 
     return (
-        <Modal show={showModal} onHide={onClose} centered>
-            <Modal.Header>
-                <Modal.Title>Sign Up</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form id="signup-form">
-                    <Form.Group controlId="formFirstName">
-                        <Form.Label>First Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter first name"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formLastName">
-                        <Form.Label>Last Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter last name"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+        <>
+            <ColorModeContext.Provider value={colorMode}>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline/>
+                    <Modal show={showModal} onHide={onClose} centered>
+                        <Modal.Header>
+                            <Modal.Title>Sign Up</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form id="signup-form">
+                                <Form.Group controlId="formFirstName">
+                                    <Form.Label>First Name</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter first name"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
+                                <Form.Group controlId="formLastName">
+                                    <Form.Label>Last Name</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter last name"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
 
-                    <Form.Group controlId="formEmail">
-                        <Form.Label>Your email</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+                                <Form.Group controlId="formEmail">
+                                    <Form.Label>Your email</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
 
-                    <Form.Group controlId="formPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
+                                <Form.Group controlId="formPassword">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                </Form.Group>
 
-                    <div className="modal-button-row">
-                        <Button variant="primary" className="btn-register" onClick={handleCreateUser}>
-                            Sign Up
-                        </Button>
-                        <Button variant="secondary" className="btn-cancel" onClick={onClose}>
-                            Cancel
-                        </Button>
-                    </div>
-                </Form>
-            </Modal.Body>
-        </Modal>
+                                <div className="modal-button-row">
+                                    <Button variant="primary" className="btn-register" onClick={handleCreateUser}>
+                                        Sign Up
+                                    </Button>
+                                    <Button variant="secondary" className="btn-cancel" onClick={onClose}>
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
+                </ThemeProvider>
+            </ColorModeContext.Provider>
+        </>
     );
 };
 

@@ -48,6 +48,7 @@
     "react-dom": "^18.2.0",
     "react-fullcalendar": "^1.0.0",
     "react-native": "0.71.7",
+    "react-otp-input": "^3.0.4",
     "react-pro-sidebar": "0.7.1",
     "react-redux": "8.0.5",
     "react-router-dom": "^6.12.1",

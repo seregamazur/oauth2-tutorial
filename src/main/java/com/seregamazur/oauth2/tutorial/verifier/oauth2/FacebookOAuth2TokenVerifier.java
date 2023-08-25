@@ -1,4 +1,4 @@
-package com.seregamazur.oauth2.tutorial.service;
+package com.seregamazur.oauth2.tutorial.verifier.oauth2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,23 +6,22 @@ import org.springframework.stereotype.Service;
 import com.seregamazur.oauth2.tutorial.client.model.IdToken;
 import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookClient;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
-import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class FacebookTokenVerifier implements TokenVerifier {
+public class FacebookOAuth2TokenVerifier implements OAuth2TokenVerifier {
 
     private final FacebookClient facebookClient;
 
     @Autowired
-    public FacebookTokenVerifier(FacebookClient facebookClient) {
+    public FacebookOAuth2TokenVerifier(FacebookClient facebookClient) {
         this.facebookClient = facebookClient;
     }
 
     @Override
-    public String verifyAndGetSubFromOauthToken(OAuth2TokenSet tokenSet) {
+    public String verifyAndGetSubFromToken(OAuth2TokenSet tokenSet) {
         IdToken idToken;
         try {
             idToken = facebookClient.verifyToken(tokenSet.getAccessToken());
@@ -33,7 +32,7 @@ public class FacebookTokenVerifier implements TokenVerifier {
     }
 
     @Override
-    public boolean verifyOAuthToken(String token) {
+    public boolean verifyToken(String token) {
         try {
             facebookClient.verifyToken(token);
             return true;

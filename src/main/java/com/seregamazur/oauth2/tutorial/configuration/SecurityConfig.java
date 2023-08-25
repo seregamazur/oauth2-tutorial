@@ -4,16 +4,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import com.seregamazur.oauth2.tutorial.security.jwt.JWTConfigurer;
-import com.seregamazur.oauth2.tutorial.security.jwt.TokenProvider;
+import com.seregamazur.oauth2.tutorial.security.jwt.TokenVerificationService;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final TokenProvider tokenProvider;
+    private final TokenVerificationService tokenVerificationService;
 
-    public SecurityConfig(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
+    public SecurityConfig(TokenVerificationService tokenVerificationService) {
+        this.tokenVerificationService = tokenVerificationService;
     }
 
     @Override
@@ -33,6 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider);
+        return new JWTConfigurer(tokenVerificationService);
     }
 }

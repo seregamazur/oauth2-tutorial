@@ -11,9 +11,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
+import com.seregamazur.oauth2.tutorial.client.model.OAuth2TokenProvider;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,9 +35,11 @@ public class User implements Serializable {
     @Indexed(unique = true)
     private String email;
     private String password;
-    private List<LoginProvider> authProviders = new ArrayList<>();
+    private List<OAuth2TokenProvider> authProviders = new ArrayList<>();
+    private boolean twoFactorEnabled;
+    private String twoFactorSecret;
 
-    public User(String email, List<LoginProvider> authProviders) {
+    public User(String email, List<OAuth2TokenProvider> authProviders) {
         this.email = email;
         this.authProviders = authProviders;
     }
@@ -62,7 +63,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public boolean hasProvider(LoginProvider provider) {
+    public boolean hasProvider(OAuth2TokenProvider provider) {
         return authProviders.contains(provider);
     }
 }

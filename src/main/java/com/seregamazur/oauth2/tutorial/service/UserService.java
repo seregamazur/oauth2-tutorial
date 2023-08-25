@@ -1,4 +1,4 @@
-package com.seregamazur.oauth2.tutorial.crud;
+package com.seregamazur.oauth2.tutorial.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,11 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
+import com.seregamazur.oauth2.tutorial.crud.User;
+import com.seregamazur.oauth2.tutorial.crud.UserDTO;
+import com.seregamazur.oauth2.tutorial.crud.UserRepository;
 import com.seregamazur.oauth2.tutorial.mapper.UserMapper;
+import com.seregamazur.oauth2.tutorial.utils.SecurityUtils;
 
 @Service
 public class UserService {
@@ -21,9 +24,25 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public Optional<UserDTO> getUser() {
+        return SecurityUtils.getCurrentUserLogin()
+            .flatMap(userRepository::findByEmail)
+            .map(userMapper::toDto);
+    }
+
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         return userMapper.toDto(users);
+    }
+
+    public Optional<UserDTO> enableTwoFactorCode(String key) {
+        Optional<User> byEmail = userRepository
+            .findByEmail(SecurityUtils.getCurrentUserLogin().get());
+        byEmail.get().setTwoFactorEnabled(true);
+        byEmail.get().setTwoFactorSecret(key);
+        return byEmail
+            .map(userRepository::save)
+            .map(userMapper::toDto);
     }
 
     public Optional<UserDTO> getUserById(String id) {
@@ -34,13 +53,12 @@ public class UserService {
         return userRepository.findByEmail(email).map(userMapper::toDto);
     }
 
-    public UserDTO createUser(UserDTO userDTO) {
+    public User createUser(UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        user.getAuthProviders().add(LoginProvider.INTERNAL);
         user = userRepository.save(user);
-        return userMapper.toDto(user);
+        return user;
     }
 
     public UserDTO updateUser(String id, User user) {

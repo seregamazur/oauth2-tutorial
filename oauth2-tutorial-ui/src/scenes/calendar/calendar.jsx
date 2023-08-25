@@ -6,7 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import {Box, CssBaseline, List, ListItem, ListItemText, ThemeProvider, Typography,} from "@mui/material";
 import Header from "../../components/Header";
-import {ColorModeContext, tokens, useMode} from "../../theme";
+import {ColorModeContext, tokens, useMode} from "../global/theme";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
 
@@ -47,8 +47,8 @@ const Calendar = () => {
         <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
                 <CssBaseline/>
-                <div className="app">
-                    <Topbar setIsSidebar={setIsSidebar}/>
+                <div>
+                    <Topbar switchStyleButtonOnly={false}/>
                     <main className="content" style={{display: "flex"}}>
                         {isSidebar && <Sidebar isSidebar={isSidebar}/>}
                         <Box flexGrow={1}>

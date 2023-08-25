@@ -8,7 +8,7 @@ import java.util.Optional;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedClient;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedClientId;
 import com.seregamazur.oauth2.tutorial.client.model.OAuth2AuthorizedData;
-import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
+import com.seregamazur.oauth2.tutorial.client.model.OAuth2TokenProvider;
 
 import lombok.experimental.UtilityClass;
 
@@ -21,7 +21,7 @@ public class TokensCache {
         return CLIENT_TOKENS.values();
     }
 
-    public Optional<OAuth2AuthorizedClient> findByClientId(LoginProvider clientId) {
+    public Optional<OAuth2AuthorizedClient> findByClientId(OAuth2TokenProvider clientId) {
         return CLIENT_TOKENS.entrySet()
             .stream()
             .filter(k -> k.getKey().getClientRegistrationId() == clientId)

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Typography, useTheme} from "@mui/material";
-import {tokens} from "../theme";
+import {tokens} from "../scenes/global/theme";
 
 const Header = ({title, subtitle}) => {
     const theme = useTheme();

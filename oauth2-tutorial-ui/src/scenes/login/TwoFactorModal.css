@@ -8,19 +8,16 @@
 .verifyDiv {
     padding: 18px;
 }
-p {
-    color: white;
-    margin-bottom: 0px;
-}
+
 .inputStyle {
-    width: 50% !important;
-    height: 40px;
+    width: 20% !important;
+    height: 30px;
     border-radius: 7px;
-    border: 5px;
+    border: 2px;
     margin-left: 8px;
     margin-right: 8px;
     background: #dddddd;
-    font-size: 20px;
+    font-size: 16px;
     color: black;
 }
 
@@ -53,20 +50,6 @@ p {
     font-size: 13px;
 }
 
-/* TwoFactorModalCustomStyles.css */
-
-/* Style for the main modal content container */
-/*.modal-content {*/
-/*    background-color: white;*/
-/*    border-radius: 8px;*/
-/*    padding: 20px;*/
-/*}*/
-
-/* Style for the QR Code image */
-.modal-content img {
-    max-width: 100%;
-}
-
 /* Style for the form group */
 .form-group {
     margin-bottom: 15px;
@@ -75,6 +58,28 @@ p {
 /* Style for the authenticator code input */
 .inputStyle {
     /* Your custom styles for the input */
+}
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.modal-content {
+    margin: 5% auto;
+    max-width: 600px;
+    font-size: 16px;
+    box-shadow: 5px 5px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.info-text {
+    padding: 0 20px; /* Adjust the padding as needed */
+}
+
+.image-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px; /* Add spacing between image and other content */
 }
 
 /* Style for the modal button row */

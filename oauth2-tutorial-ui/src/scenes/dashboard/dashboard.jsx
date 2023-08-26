@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, CssBaseline, ThemeProvider} from "@mui/material";
+import {Box, CssBaseline, ThemeProvider, useTheme} from "@mui/material";
 import {ColorModeContext, tokens, useMode} from "../global/theme";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
@@ -178,11 +178,9 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div>
                         {showTwoFactorModal && (
                             <TwoFactorModal showModal={showTwoFactorModal} onClose={closeTwoFactorModal}/>
                         )}
-                    </div>
                 </ThemeProvider>
 
             </ColorModeContext.Provider>

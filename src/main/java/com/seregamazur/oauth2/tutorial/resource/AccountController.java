@@ -46,7 +46,7 @@ public class AccountController {
         String currentUserEmail = SecurityUtils.getCurrentUserLogin().get();
         twoFactorService.storeTempSecret(currentUserEmail, secretKey);
         String barCodeUrl = twoFactorService.getGoogleAuthenticatorBarCode(secretKey, currentUserEmail);
-        byte[] qrCode = twoFactorService.createQRCode(barCodeUrl, 300, 300);
+        byte[] qrCode = twoFactorService.createQRCode(barCodeUrl, 200, 200);
         return ResponseEntity.ok()
             .header("Content-Type", "image/png")
             .body(qrCode);

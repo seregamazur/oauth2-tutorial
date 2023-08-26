@@ -1,17 +1,27 @@
-import React, {useState} from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Modal} from 'react-bootstrap';
 import {getToken} from "../../utils/Common";
 import OtpInput from 'react-otp-input';
 import "./TwoFactorModal.css";
-import {useNavigate} from 'react-router-dom';
 import {createTheme} from "@mui/material/styles";
+import {themeSettings, useMode} from "../global/theme";
+import {Paper, useTheme} from "@mui/material";
 
 const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
+
+    // const  [theme, colorMode ] = useMode();
+    // const inputStyle = themeSettings(theme.palette.mode);
     const theme = createTheme();
-    const navigate = useNavigate();
+    const inputStyle = themeSettings(theme.palette.mode);
+
     const [showQRCode, setShowQRCode] = useState(false);
     const [authenticatorCode, setAuthenticatorCode] = useState('');
     const [qrCodeImage, setQRCodeImage] = useState('');
+
+    useEffect(() => {
+        // Call getUser() when the component mounts
+        handleEnable2FA();
+    }, []); // Empty dependency array means this effect runs only once on mount
 
     const handleEnable2FA = async () => {
         // Make a request to enable 2FA and get the QR code image
@@ -48,8 +58,6 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
             if (response.ok) {
                 onClose();
                 console.log('2FA successful');
-                navigate('/dashboard');
-                // Handle successful verification
             } else {
                 // Handle verification error
             }
@@ -58,22 +66,28 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
         }
     };
 
-    const skip2FA = async () => {
-        onClose();
-        console.log('Skipping 2FA');
-        navigate('/dashboard');
-    }
-
     return (
-        <Modal show={showModal} onHide={onClose} contentLabel="Enable 2FA" centered>
-            <Modal.Body>
-                <div className={`modal-content ${theme ? "" : "custom-modal-content"}`}>
-                    <h3>Enable Two-Factor Authentication</h3>
-                    {showQRCode ? (
+        <Modal className="modal-overlay" show={showModal} onHide={onClose} centered>
+            <Paper style={inputStyle.palette.background}>
+                <h2>Enable 2FA</h2>
+                <Modal.Body>
+                    <div className="image-container">
                         <>
-                            <img src={qrCodeImage} alt="QR Code" />
+                            <div className="info-text">
+                                <h3>Setup authenticator app</h3>
+                                <p>
+                                    Authenticator apps and browser extensions like 1Password, Authy, Microsoft Authenticator, etc. generate one-time
+                                    passwords that are used as a second factor to verify your identity when prompted during sign-in.
+                                </p>
+                                <h3>Scan the QR code</h3>
+                                <p>
+                                    Use an authenticator app or browser extension to scan. Learn more about enabling 2FA.
+                                </p>
+                            </div>
+                            <img src={qrCodeImage} alt="QR Code"/>
+                            <br/>
+                            <h3>Enter Authenticator Code</h3>
                             <Form.Group controlId="authenticatorCode">
-                                <Form.Label>Enter Authenticator Code</Form.Label>
                                 <OtpInput
                                     value={authenticatorCode}
                                     onChange={setAuthenticatorCode}
@@ -83,6 +97,7 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
                                     renderInput={(props) => <input {...props} />}
                                 />
                             </Form.Group>
+
                             <div className="modal-button-row">
                                 <Button variant="primary" className="btn-register" onClick={handleVerify2FA}>
                                     Verify
@@ -92,21 +107,9 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
                                 </Button>
                             </div>
                         </>
-                    ) : (
-                        <>
-                            <p>We recommend turning on two-factor authentication:</p>
-                            <div className="modal-button-row">
-                                <Button variant="primary" className="btn-register" onClick={handleEnable2FA}>
-                                    Turn on
-                                </Button>
-                                <Button variant="secondary" className="btn-cancel" onClick={skip2FA}>
-                                    Cancel
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </Modal.Body>
+                    </div>
+                </Modal.Body>
+            </Paper>
         </Modal>
     );
 };

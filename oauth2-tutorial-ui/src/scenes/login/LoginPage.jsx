@@ -8,12 +8,11 @@ import {setUserSession} from '../../utils/Common';
 import SignUpModal from './SignUpModal';
 import {ColorModeContext, themeSettings, tokens, useMode} from "../global/theme";
 import Topbar from "../global/Topbar";
-import {colors, CssBaseline, ThemeProvider} from "@mui/material";
+import {CssBaseline, ThemeProvider} from "@mui/material";
 
 function LoginPage() {
 
     const [theme, colorMode] = useMode();
-    const colors = tokens(theme.palette.mode);
     const inputStyle = themeSettings(theme.palette.mode);
 
     const navigate = useNavigate();
@@ -88,9 +87,8 @@ function LoginPage() {
                 if (authProviders.length === 0) {
                     setShowPassword(true);
                     setErrorMessage('');
-                    // setShowProvidersMessage(false)
-
                 } else {
+                    setErrorMessage('');
                     setShowProvidersMessage(true);
                     setProviders(authProviders || []);
                     setShowProviders(authProviders && authProviders.length > 0);
@@ -156,9 +154,11 @@ function LoginPage() {
                         <form onSubmit={showPassword ? handlePasswordSubmit : handleLogin}>
                             <label htmlFor="email">Email</label>
                             <input
+                                autoFocus={true}
                                 type="email"
                                 id="email"
                                 name="email"
+                                className="login-input"
                                 style={inputStyle.palette.input}
                                 placeholder="Enter email"
                                 value={email}
@@ -177,6 +177,8 @@ function LoginPage() {
                                 <>
                                     <label htmlFor="password">Password</label>
                                     <input
+                                        className="login-input"
+                                        style={inputStyle.palette.input}
                                         type="password"
                                         id="password"
                                         name="password"

@@ -1,5 +1,6 @@
 import {createContext, useState, useMemo} from "react";
 import {createTheme} from "@mui/material/styles";
+import {fontSize} from "@mui/system";
 
 // color design tokens export
 export const tokens = (mode) => ({
@@ -144,9 +145,10 @@ export const themeSettings = (mode) => {
                         default: colors.primary[500],
                     },
                     input: {
+                        fontSize: 16,
                         backgroundColor: colors.primary[400],
                         color: colors.primary[100]
-                    },
+                    }
                 }
                 : {
                     // palette values for light mode
@@ -165,9 +167,11 @@ export const themeSettings = (mode) => {
                         default: "#fcfcfc",
                     },
                     input: {
+                        fontSize: 16,
                         backgroundColor: colors.primary[400],
                         color: colors.primary[100]
                     },
+
                     line: {}
                 }),
         },
@@ -209,14 +213,18 @@ export const ColorModeContext = createContext({
 });
 
 export const useMode = () => {
-    const [mode, setMode] = useState("dark");
+    const storedMode = localStorage.getItem("themeMode");
+    const [mode, setMode] = useState(storedMode || "dark");
 
     const colorMode = useMemo(
         () => ({
-            toggleColorMode: () =>
-                setMode((prev) => (prev === "light" ? "dark" : "light")),
+            toggleColorMode: () => {
+                const newMode = mode === "light" ? "dark" : "light";
+                setMode(newMode);
+                localStorage.setItem("themeMode", newMode);
+            },
         }),
-        []
+        [mode]
     );
 
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);

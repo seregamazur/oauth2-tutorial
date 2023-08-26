@@ -31,9 +31,9 @@ public class OktaOAuth2TokenVerifier implements OAuth2TokenVerifier {
     }
 
     @Override
-    public boolean verifyToken(String token) {
+    public boolean verifyToken(OAuth2TokenPair token) {
         try {
-            accessTokenVerifier.decode(token);
+            accessTokenVerifier.decode(token.getAccessToken());
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

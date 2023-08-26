@@ -30,9 +30,9 @@ public class GoogleOAuth2TokenVerifier implements OAuth2TokenVerifier {
     }
 
     @Override
-    public boolean verifyToken(String token) {
+    public boolean verifyToken(OAuth2TokenPair token) {
         try {
-            googleIdTokenVerifier.verify(token);
+            googleIdTokenVerifier.verify(token.getOpenIdToken());
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

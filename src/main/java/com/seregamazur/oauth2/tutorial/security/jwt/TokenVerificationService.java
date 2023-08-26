@@ -13,11 +13,13 @@ import com.seregamazur.oauth2.tutorial.verifier.credentials.CredentialsTokenVeri
 import com.seregamazur.oauth2.tutorial.verifier.oauth2.FacebookOAuth2TokenVerifier;
 import com.seregamazur.oauth2.tutorial.verifier.oauth2.GithubOAuth2TokenVerifier;
 import com.seregamazur.oauth2.tutorial.verifier.oauth2.GoogleOAuth2TokenVerifier;
+import com.seregamazur.oauth2.tutorial.verifier.oauth2.OAuth2TokenPair;
 import com.seregamazur.oauth2.tutorial.verifier.oauth2.OAuth2TokenVerifier;
 import com.seregamazur.oauth2.tutorial.verifier.oauth2.OktaOAuth2TokenVerifier;
 
 import io.jsonwebtoken.Claims;
 
+import static com.seregamazur.oauth2.tutorial.utils.Constants.ACCESS_TOKEN_KEY;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.ACCESS_TOKEN_PROVIDER;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.EMAIL_KEY;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.LOGIN_TYPE;
@@ -68,15 +70,15 @@ public class TokenVerificationService {
         LoginType loginType = LoginType.valueOf((String) claims.get(LOGIN_TYPE));
         if (loginType == LoginType.OAUTH2) {
             OAuth2TokenProvider issuer = OAuth2TokenProvider.valueOf(claims.get(ACCESS_TOKEN_PROVIDER, String.class));
-            OAuth2TokenVerifier verifier = getAccessTokenVerifier(issuer);
-            String accessToken = (String) claims.get(OPEN_ID_TOKEN_KEY);
-            return verifier.verifyToken(accessToken);
+            OAuth2TokenVerifier verifier = getOAuth2TokenVerifier(issuer);
+            OAuth2TokenPair tokenPair = new OAuth2TokenPair((String) claims.get(OPEN_ID_TOKEN_KEY), (String) claims.get(ACCESS_TOKEN_KEY));
+            return verifier.verifyToken(tokenPair);
         } else {
             return credentialsTokenVerifier.verifyCredentialsToken(jwtToken);
         }
     }
 
-    public OAuth2TokenVerifier getAccessTokenVerifier(OAuth2TokenProvider clientId) {
+    public OAuth2TokenVerifier getOAuth2TokenVerifier(OAuth2TokenProvider clientId) {
         switch (clientId) {
             case GOOGLE:
                 return googleTokenValidator;

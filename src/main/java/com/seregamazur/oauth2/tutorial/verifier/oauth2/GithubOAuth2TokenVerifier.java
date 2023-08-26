@@ -30,9 +30,9 @@ public class GithubOAuth2TokenVerifier implements OAuth2TokenVerifier {
     }
 
     @Override
-    public boolean verifyToken(String token) {
+    public boolean verifyToken(OAuth2TokenPair token) {
         try {
-            githubClientData.verifyToken(token);
+            githubClientData.verifyToken("Bearer " + token.getAccessToken());
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

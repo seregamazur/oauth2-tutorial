@@ -42,7 +42,7 @@ public class OAuth2JWTTokenProvider {
 
     public JWTToken createJwt(OAuth2TokenSet oAuth2TokenSet) {
         OAuth2TokenProvider OAuth2TokenProvider = oAuth2TokenSet.getOAuth2TokenProvider();
-        OAuth2TokenVerifier tokenVerifier = tokenVerificationService.getAccessTokenVerifier(OAuth2TokenProvider);
+        OAuth2TokenVerifier tokenVerifier = tokenVerificationService.getOAuth2TokenVerifier(OAuth2TokenProvider);
         String sub = tokenVerifier.verifyAndGetSubFromToken(oAuth2TokenSet);
         Optional<User> byEmail = userRepository.findByEmail(sub);
         User userByEmail = byEmail.orElseGet(() -> userRepository.save(new User(sub, List.of(OAuth2TokenProvider))));

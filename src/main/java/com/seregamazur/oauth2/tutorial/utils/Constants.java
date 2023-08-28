@@ -9,4 +9,5 @@ public class Constants {
     public static final String OAUTH2_SCOPES = "scopes";
     public static final String USER_ID_KEY = "sub";
     public static final String USER_FULL_NAME_KEY = "user_full_name";
+    public static final String TWO_FACTOR_ENABLED = "two_factor_enabled";
 }

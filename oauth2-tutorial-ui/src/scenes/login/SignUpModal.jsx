@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Modal} from 'react-bootstrap';
 import './SignUpModal.css';
-import {setUserSession} from "../../utils/Common";
+import {setToken} from "../../utils/Common";
 import {useNavigate} from "react-router-dom";
 import {Paper, useTheme} from "@mui/material";
 import {themeSettings} from "../global/theme";
@@ -56,7 +56,7 @@ const SignUpModal = ({showModal, onClose}) => {
             if (response.ok) {
                 const responseData = await response.json();
                 const jwtValue = responseData.value;
-                setUserSession(jwtValue);
+                setToken(jwtValue);
                 // Handle successful login here
                 console.log('Login successful');
                 onClose();

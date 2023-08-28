@@ -25,6 +25,7 @@ import static com.seregamazur.oauth2.tutorial.utils.Constants.EMAIL_KEY;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.LOGIN_TYPE;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.OAUTH2_SCOPES;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.OPEN_ID_TOKEN_KEY;
+import static com.seregamazur.oauth2.tutorial.utils.Constants.TWO_FACTOR_ENABLED;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.USER_FULL_NAME_KEY;
 
 @Service
@@ -67,6 +68,7 @@ public class OAuth2JWTTokenProvider {
             .setSubject(user.getId())
             .signWith(tokenConfig.getKey(), SignatureAlgorithm.HS512)
             .setExpiration(validity)
+            .claim(TWO_FACTOR_ENABLED, user.isTwoFactorEnabled())
             .claim(LOGIN_TYPE, LoginType.OAUTH2)
             .claim(ACCESS_TOKEN_PROVIDER, accessTokenProvider)
             .claim(ACCESS_TOKEN_KEY, accessToken)

@@ -5,12 +5,14 @@ import LoginPage from './scenes/login/LoginPage';
 import Dashboard from "./scenes/dashboard/dashboard";
 import Calendar from "./scenes/calendar/calendar";
 import OAuth2Token from "./components/OAuth2Token";
+import TwoFactorPage from "./scenes/2fa/TwoFactorPage";
 
 ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
                 <Route path="login" element={<LoginPage/>}/>
+                <Route path="2fa" element={<TwoFactorPage/>}/>
                 <Route path="register" element={<LoginPage/>}/>
                 <Route path="dashboard" element={<Dashboard/>}/>
                 <Route path="calendar" element={<Calendar/>}/>

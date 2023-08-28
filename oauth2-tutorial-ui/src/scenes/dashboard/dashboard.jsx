@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, CssBaseline, ThemeProvider, useTheme} from "@mui/material";
+import {Box, CssBaseline, ThemeProvider} from "@mui/material";
 import {ColorModeContext, tokens, useMode} from "../global/theme";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
@@ -9,9 +9,9 @@ import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
-import {getToken} from "../../utils/Common";
-import TwoFactorModal from "../login/TwoFactorModal";
-import "../login/TwoFactorModal.css";
+import {getAccountInfo, getToken} from "../../utils/Common";
+import TwoFactorModal from "../login/EnableTwoFactorModal";
+import "../login/EnableTwoFactorModal.css";
 
 const Dashboard = () => {
     const [theme, colorMode] = useMode();
@@ -26,13 +26,7 @@ const Dashboard = () => {
 
     const getUser = async () => {
         try {
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/account', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + getToken()
-                }
-            });
+            const response = await getAccountInfo();
 
             if (response.ok) {
                 const responseData = await response.json();
@@ -46,13 +40,9 @@ const Dashboard = () => {
                     firstName: responseData.firstName,
                     lastName: responseData.lastName,
                     email: responseData.email,
-                    password: responseData.password,
                     authProviders: responseData.authProviders,
                     twoFactorEnabled: responseData.twoFactorEnabled
                 };
-                if (user.twoFactorEnabled === false) {
-                    setShowTwoFactorModal(true);
-                }
                 return user; // Return the mapped user object
             } else if (response.status === 404) {
                 throw new Error('No user found with this email.');

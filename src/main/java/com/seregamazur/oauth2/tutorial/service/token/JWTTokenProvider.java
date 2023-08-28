@@ -19,6 +19,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import static com.seregamazur.oauth2.tutorial.utils.Constants.EMAIL_KEY;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.LOGIN_TYPE;
+import static com.seregamazur.oauth2.tutorial.utils.Constants.TWO_FACTOR_ENABLED;
 import static com.seregamazur.oauth2.tutorial.utils.Constants.USER_FULL_NAME_KEY;
 
 @Service
@@ -54,6 +55,7 @@ public class JWTTokenProvider {
             .setSubject(user.getId())
             .signWith(tokenConfig.getKey(), SignatureAlgorithm.HS512)
             .setExpiration(validity)
+            .claim(TWO_FACTOR_ENABLED, user.isTwoFactorEnabled())
             .claim(LOGIN_TYPE, LoginType.CREDENTIALS)
             .claim(USER_FULL_NAME_KEY, user.getFirstName() + ", " + user.getLastName())
             .claim(EMAIL_KEY, user.getEmail())

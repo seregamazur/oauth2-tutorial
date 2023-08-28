@@ -4,11 +4,12 @@ import {faFacebookSquare, faGithub, faGoogle} from '@fortawesome/free-brands-svg
 import {faLock} from '@fortawesome/free-solid-svg-icons';
 import './LoginPage.css';
 import {useNavigate} from 'react-router-dom';
-import {setUserSession} from '../../utils/Common';
+import {identifyEmail, setToken, twoFactorEnabled} from '../../utils/Common';
 import SignUpModal from './SignUpModal';
-import {ColorModeContext, themeSettings, tokens, useMode} from "../global/theme";
+import {ColorModeContext, themeSettings, useMode} from "../global/theme";
 import Topbar from "../global/Topbar";
 import {CssBaseline, ThemeProvider} from "@mui/material";
+import TwoFactorModal from "./TwoFactorModal";
 
 function LoginPage() {
 
@@ -17,6 +18,7 @@ function LoginPage() {
 
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
+    const [show2fa, setShow2fa] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +34,10 @@ function LoginPage() {
 
     const closeModal = () => {
         setShowModal(false);
+    };
+
+    const close2fa = () => {
+        setShow2fa(false);
     };
 
     const revertToDefaultState = () => {
@@ -72,12 +78,7 @@ function LoginPage() {
         e.preventDefault();
 
         try {
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/identify?email=' + email, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await identifyEmail(email);
 
             if (response.ok) {
                 const responseData = await response.json();
@@ -129,10 +130,15 @@ function LoginPage() {
             if (response.ok) {
                 const responseData = await response.json();
                 const jwtValue = responseData.value;
-                setUserSession(jwtValue);
+                setToken(jwtValue);
                 // Handle successful login here
                 console.log('Login successful');
-                navigate('/dashboard');
+                const twoFactor = await twoFactorEnabled();
+                if (twoFactor === false) {
+                    navigate('/2fa');
+                } else {
+                    setShow2fa(true);
+                }
             } else {
                 // Handle login error here
                 console.error('Login failed');
@@ -235,6 +241,7 @@ function LoginPage() {
                             )}
                         </div>
                         <SignUpModal showModal={showModal} onClose={closeModal}/>
+                        <TwoFactorModal showModal={show2fa} onClose={close2fa}/>
                     </div>
                 </ThemeProvider>
             </ColorModeContext.Provider>

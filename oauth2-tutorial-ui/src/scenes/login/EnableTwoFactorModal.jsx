@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Form, Modal} from 'react-bootstrap';
 import {getToken} from "../../utils/Common";
 import OtpInput from 'react-otp-input';
@@ -7,7 +7,7 @@ import {createTheme} from "@mui/material/styles";
 import {themeSettings} from "../global/theme";
 import {Paper} from "@mui/material";
 
-const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
+const EnableTwoFactorAuthenticationModal = ({showModal, onClose}) => {
 
     // const  [theme, colorMode ] = useMode();
     // const inputStyle = themeSettings(theme.palette.mode);
@@ -17,6 +17,33 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
     const [showQRCode, setShowQRCode] = useState(false);
     const [authenticatorCode, setAuthenticatorCode] = useState('');
     const [qrCodeImage, setQRCodeImage] = useState('');
+
+    useEffect(() => {
+        // Call getUser() when the component mounts
+        handleEnable2FA();
+    }, []); // Empty dependency array means this effect runs only once on mount
+
+    const handleEnable2FA = async () => {
+        // Make a request to enable 2FA and get the QR code image
+        try {
+            const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/enable-2fa', {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + getToken(),
+                },
+            });
+            if (response.ok) {
+                const qrCodeImageBlob = await response.blob();
+                const qrCodeImageUrl = URL.createObjectURL(qrCodeImageBlob);
+                setQRCodeImage(qrCodeImageUrl);
+                setShowQRCode(true);
+            } else {
+                // Handle error
+            }
+        } catch (error) {
+            // Handle network or other errors
+        }
+    };
 
     const handleVerify2FA = async () => {
         // Make a request to verify 2FA using the entered authenticator code
@@ -42,7 +69,7 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
     return (
         <Modal className="modal-overlay" show={showModal} onHide={onClose} centered>
             <Paper style={inputStyle.palette.background}>
-                <h2>Verify 2FA</h2>
+                <h2>Enable 2FA</h2>
                 <Modal.Body>
                     <div className="image-container">
                         <>
@@ -53,7 +80,12 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
                                     one-time
                                     passwords that are used as a second factor to verify your identity when prompted during sign-in.
                                 </p>
+                                <h3>Scan the QR code</h3>
+                                <p>
+                                    Use an authenticator app or browser extension to scan. Learn more about enabling 2FA.
+                                </p>
                             </div>
+                            <img src={qrCodeImage} alt="QR Code"/>
                             <br/>
                             <h3>Enter Authenticator Code</h3>
                             <Form.Group controlId="authenticatorCode">
@@ -83,4 +115,4 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
     );
 };
 
-export default TwoFactorAuthenticationModal;
+export default EnableTwoFactorAuthenticationModal;

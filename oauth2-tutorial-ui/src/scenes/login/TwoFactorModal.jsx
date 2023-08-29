@@ -2,21 +2,21 @@ import React, {useState} from 'react';
 import {Button, Form, Modal} from 'react-bootstrap';
 import {getToken} from "../../utils/Common";
 import OtpInput from 'react-otp-input';
-import "./EnableTwoFactorModal.css";
+import "./TwoFactorModal.css";
 import {createTheme} from "@mui/material/styles";
 import {themeSettings} from "../global/theme";
 import {Paper} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
 
+    const navigate = useNavigate();
     // const  [theme, colorMode ] = useMode();
     // const inputStyle = themeSettings(theme.palette.mode);
     const theme = createTheme();
     const inputStyle = themeSettings(theme.palette.mode);
 
-    const [showQRCode, setShowQRCode] = useState(false);
     const [authenticatorCode, setAuthenticatorCode] = useState('');
-    const [qrCodeImage, setQRCodeImage] = useState('');
 
     const handleVerify2FA = async () => {
         // Make a request to verify 2FA using the entered authenticator code
@@ -31,6 +31,7 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
             if (response.ok) {
                 onClose();
                 console.log('2FA successful');
+                navigate('/dashboard');
             } else {
                 // Handle verification error
             }
@@ -58,6 +59,7 @@ const TwoFactorAuthenticationModal = ({showModal, onClose}) => {
                             <h3>Enter Authenticator Code</h3>
                             <Form.Group controlId="authenticatorCode">
                                 <OtpInput
+                                    shouldAutoFocus={true}
                                     value={authenticatorCode}
                                     onChange={setAuthenticatorCode}
                                     isInputNum={true}

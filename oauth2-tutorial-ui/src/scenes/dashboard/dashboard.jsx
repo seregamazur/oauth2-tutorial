@@ -10,8 +10,7 @@ import StatBox from "../../components/StatBox";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
 import {getAccountInfo, getToken} from "../../utils/Common";
-import TwoFactorModal from "../login/EnableTwoFactorModal";
-import "../login/EnableTwoFactorModal.css";
+import TwoFactorModal from "../login/TwoFactorModal";
 
 const Dashboard = () => {
     const [theme, colorMode] = useMode();

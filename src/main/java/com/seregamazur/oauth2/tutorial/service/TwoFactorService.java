@@ -7,14 +7,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -40,10 +39,9 @@ public class TwoFactorService {
         redisConnection.sync().setex(sessionId, expirationDuration.getSeconds(), secretKey);
     }
 
-    public String getCurrentTempSecret() {
+    public Optional<String> getCurrentTempSecret() {
         return SecurityUtils.getCurrentUserLogin()
-            .map(l -> redisConnection.sync().get(l))
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User with username " + SecurityUtils.getCurrentUserLogin() + " doesn't have temp 2fa key"));
+            .map(l -> redisConnection.sync().get(l));
     }
 
     private static final String APP_NAME = "OAuth2 Tutorial";

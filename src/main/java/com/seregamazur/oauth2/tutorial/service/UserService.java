@@ -61,6 +61,12 @@ public class UserService {
         return user;
     }
 
+    public String getTwoFactorSecret() {
+        Optional<User> byEmail = userRepository
+            .findByEmail(SecurityUtils.getCurrentUserLogin().get());
+        return byEmail.get().getTwoFactorSecret();
+    }
+
     public UserDTO updateUser(String id, User user) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {

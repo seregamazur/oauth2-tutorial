@@ -20,6 +20,8 @@ import com.seregamazur.oauth2.tutorial.service.TwoFactorService;
 import com.seregamazur.oauth2.tutorial.service.UserService;
 import com.seregamazur.oauth2.tutorial.utils.SecurityUtils;
 
+import io.netty.util.internal.StringUtil;
+
 @Controller
 public class AccountController {
 
@@ -67,12 +69,16 @@ public class AccountController {
     @Transactional
     @PostMapping(value = "/api/v1/verify-2fa")
     public ResponseEntity<UserDTO> verifyTwoFactorCode(@RequestParam("totpCode") String twoFactorCode) {
-        String tempSecret = twoFactorService.getCurrentTempSecret();
-        String totpCode = twoFactorService.getTOTPCode(tempSecret);
-        if (twoFactorCode.equals(totpCode)) {
-            return ResponseUtil.wrapOrNotFound(userService.enableTwoFactorCode(tempSecret));
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid temporary one time password");
+        String secret = twoFactorService.getCurrentTempSecret().orElseGet(userService::getTwoFactorSecret);
+        if (!StringUtil.isNullOrEmpty(secret)) {
+            String totpCode = twoFactorService.getTOTPCode(secret);
+            if (twoFactorCode.equals(totpCode)) {
+                return ResponseUtil.wrapOrNotFound(userService.enableTwoFactorCode(secret));
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid one time password");
+            }
         }
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "User doesn't have 2fa secret");
     }
+
 }

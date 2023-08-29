@@ -12,6 +12,7 @@ const OAuth2Token = () => {
 
     const close2fa = () => {
         setShow2fa(false);
+        navigate('/login');
     };
 
     useEffect(() => {
@@ -20,7 +21,7 @@ const OAuth2Token = () => {
         if (twoFactor === false) {
             navigate('/2fa');
         } else {
-            navigate('/dashboard');
+            setShow2fa(true);
         }
     }, []);
     return <TwoFactorModal showModal={show2fa} onClose={close2fa}/>

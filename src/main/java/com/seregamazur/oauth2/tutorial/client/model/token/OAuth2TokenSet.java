@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.seregamazur.oauth2.tutorial.client.model.LoginProvider;
+import com.seregamazur.oauth2.tutorial.client.model.OAuth2TokenProvider;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,6 +43,6 @@ public class OAuth2TokenSet implements Serializable {
     private Instant expiresAt;
     @JsonProperty("scope")
     private String scope;
-    private LoginProvider loginProvider;
+    private OAuth2TokenProvider OAuth2TokenProvider;
 
 }

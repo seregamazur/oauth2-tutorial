@@ -1,4 +1,6 @@
 // return the user data from the session storage
+import jwtDecode from "jwt-decode";
+
 export const getUser = () => {
     const userStr = sessionStorage.getItem('user');
     if (userStr) return JSON.parse(userStr);
@@ -17,7 +19,40 @@ export const removeUserSession = () => {
 }
 
 // set the token and user from the session storage
-export const setUserSession = (token) => {
+export const setToken = (token) => {
     sessionStorage.setItem('token', token);
     localStorage.setItem('token', token);
+}
+
+export async function enableTwoFactor() {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/enable-2fa', {
+        method: 'GET',
+        headers: {
+            Authorization: 'Bearer ' + getToken(),
+        },
+    });
+}
+
+export const twoFactorEnabled = () => {
+    const decodedToken = jwtDecode(getToken());
+    return decodedToken.two_factor_enabled; // Assuming 'enable_2fa' is a claim in the JWT
+}
+
+export async function getAccountInfo() {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/account', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getToken()
+        }
+    });
+}
+
+export async function identifyEmail(email) {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/identify?email=' + email, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
 }

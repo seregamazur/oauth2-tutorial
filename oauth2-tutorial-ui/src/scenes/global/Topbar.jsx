@@ -1,11 +1,16 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Box, IconButton} from "@mui/material";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import {Box, IconButton, useTheme} from "@mui/material";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import Dropdown from "./Dropdown";
-import "./Dropdown.css"
+import "./Dropdown.css";
+import { ColorModeContext, useMode } from "./theme";
 
-const Topbar = () => {
+const Topbar = ({ switchStyleButtonOnly }) => {
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const iconButtonRef = useRef(null);
@@ -21,32 +26,38 @@ const Topbar = () => {
     };
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
 
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
 
     return (
         <>
             <Box display="flex" justifyContent="space-between" p={3}>
-                <Box>
-                </Box>
+                <IconButton onClick={colorMode.toggleColorMode}>
+                    {theme.palette.mode === "dark" ? (
+                        <DarkModeOutlinedIcon />
+                    ) : (
+                        <LightModeOutlinedIcon />
+                    )}
+                </IconButton>
+                <Box></Box>
 
-                <Box display="flex">
-                    <IconButton>
-                        <SettingsOutlinedIcon/>
-                    </IconButton>
-                    <IconButton ref={iconButtonRef} onClick={handleButtonClick}>
-                        <div>
-                            {isOpen && (<div className="dropdown-container"><Dropdown/></div>)}
-                        </div>
-                        <PersonOutlinedIcon/>
-                    </IconButton>
-                </Box>
+                {!switchStyleButtonOnly && (
+                    <Box display="flex">
+                        <IconButton>
+                            <SettingsOutlinedIcon />
+                        </IconButton>
+                        <IconButton ref={iconButtonRef} onClick={handleButtonClick}>
+                            <div>{isOpen && <div className="dropdown-container"><Dropdown /></div>}</div>
+                            <PersonOutlinedIcon />
+                        </IconButton>
+                    </Box>
+                )}
             </Box>
-            <div class="line-topbar"></div>
+            {!switchStyleButtonOnly && <div class="line-topbar"></div>}
         </>
     );
 };

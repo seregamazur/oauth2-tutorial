@@ -1,4 +1,4 @@
-package com.seregamazur.oauth2.tutorial.service;
+package com.seregamazur.oauth2.tutorial.verifier.oauth2;
 
 import org.springframework.stereotype.Service;
 
@@ -6,22 +6,21 @@ import com.okta.jwt.AccessTokenVerifier;
 import com.okta.jwt.Jwt;
 import com.okta.jwt.JwtVerificationException;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
-import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class OktaTokenVerifier implements TokenVerifier {
+public class OktaOAuth2TokenVerifier implements OAuth2TokenVerifier {
 
     private final AccessTokenVerifier accessTokenVerifier;
 
-    public OktaTokenVerifier(AccessTokenVerifier accessTokenVerifier) {
+    public OktaOAuth2TokenVerifier(AccessTokenVerifier accessTokenVerifier) {
         this.accessTokenVerifier = accessTokenVerifier;
     }
 
     @Override
-    public String verifyAndGetSubFromOauthToken(OAuth2TokenSet tokenSet) {
+    public String verifyAndGetSubFromToken(OAuth2TokenSet tokenSet) {
         Jwt decode;
         try {
             decode = accessTokenVerifier.decode(tokenSet.getAccessToken());
@@ -32,9 +31,9 @@ public class OktaTokenVerifier implements TokenVerifier {
     }
 
     @Override
-    public boolean verifyOAuthToken(String token) {
+    public boolean verifyToken(OAuth2TokenPair token) {
         try {
-            accessTokenVerifier.decode(token);
+            accessTokenVerifier.decode(token.getAccessToken());
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

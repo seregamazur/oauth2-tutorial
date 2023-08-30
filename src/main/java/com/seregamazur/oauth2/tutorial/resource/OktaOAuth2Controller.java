@@ -9,7 +9,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.seregamazur.oauth2.tutorial.client.model.okta.OktaOAuth2Client;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
-import com.seregamazur.oauth2.tutorial.service.JWTTokenCreationService;
+import com.seregamazur.oauth2.tutorial.service.token.OAuth2JWTTokenProvider;
 
 @Controller
 public class OktaOAuth2Controller {
@@ -21,9 +21,9 @@ public class OktaOAuth2Controller {
     private String location;
 
     private final OktaOAuth2Client oktaClient;
-    private final JWTTokenCreationService tokenCreationService;
+    private final OAuth2JWTTokenProvider tokenCreationService;
 
-    public OktaOAuth2Controller(OktaOAuth2Client oktaClient, JWTTokenCreationService tokenCreationService) {
+    public OktaOAuth2Controller(OktaOAuth2Client oktaClient, OAuth2JWTTokenProvider tokenCreationService) {
         this.oktaClient = oktaClient;
         this.tokenCreationService = tokenCreationService;
     }
@@ -39,7 +39,7 @@ public class OktaOAuth2Controller {
     @GetMapping("/oauth2/authorization/okta/callback")
     public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
         OAuth2TokenSet oAuth2TokenSet = oktaClient.convertAuthCodeToAccessToken(code);
-        JWTToken token = tokenCreationService.createJwtFromAccessToken(oAuth2TokenSet);
+        JWTToken token = tokenCreationService.createJwt(oAuth2TokenSet);
         return new RedirectView(location + "?token=" + token.getValue());
     }
 }

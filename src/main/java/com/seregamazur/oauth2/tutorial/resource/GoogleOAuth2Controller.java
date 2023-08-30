@@ -9,7 +9,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.seregamazur.oauth2.tutorial.client.model.google.GoogleOAuth2Client;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
-import com.seregamazur.oauth2.tutorial.service.JWTTokenCreationService;
+import com.seregamazur.oauth2.tutorial.service.token.OAuth2JWTTokenProvider;
 
 @Controller
 public class GoogleOAuth2Controller {
@@ -21,9 +21,9 @@ public class GoogleOAuth2Controller {
     private String location;
 
     private final GoogleOAuth2Client googleClient;
-    private final JWTTokenCreationService tokenCreationService;
+    private final OAuth2JWTTokenProvider tokenCreationService;
 
-    public GoogleOAuth2Controller(GoogleOAuth2Client googleClient, JWTTokenCreationService tokenCreationService) {
+    public GoogleOAuth2Controller(GoogleOAuth2Client googleClient, OAuth2JWTTokenProvider tokenCreationService) {
         this.googleClient = googleClient;
         this.tokenCreationService = tokenCreationService;
     }
@@ -39,7 +39,7 @@ public class GoogleOAuth2Controller {
     @GetMapping("/oauth2/authorization/google/callback")
     public RedirectView receiveCallbackAuthorization(@RequestParam("code") String code) {
         OAuth2TokenSet oAuth2TokenSet = googleClient.convertAuthCodeToAccessToken(code);
-        JWTToken token = tokenCreationService.createJwtFromAccessToken(oAuth2TokenSet);
+        JWTToken token = tokenCreationService.createJwt(oAuth2TokenSet);
         return new RedirectView(location + "?token=" + token.getValue());
     }
 

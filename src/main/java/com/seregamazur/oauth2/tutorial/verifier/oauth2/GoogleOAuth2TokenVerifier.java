@@ -1,26 +1,25 @@
-package com.seregamazur.oauth2.tutorial.service;
+package com.seregamazur.oauth2.tutorial.verifier.oauth2;
 
 import org.springframework.stereotype.Service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
-import com.seregamazur.oauth2.tutorial.security.jwt.AccessTokenVerificationException;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class GoogleTokenVerifier implements TokenVerifier {
+public class GoogleOAuth2TokenVerifier implements OAuth2TokenVerifier {
 
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
 
-    public GoogleTokenVerifier(GoogleIdTokenVerifier googleIdTokenVerifier) {
+    public GoogleOAuth2TokenVerifier(GoogleIdTokenVerifier googleIdTokenVerifier) {
         this.googleIdTokenVerifier = googleIdTokenVerifier;
     }
 
     @Override
-    public String verifyAndGetSubFromOauthToken(OAuth2TokenSet tokenSet) {
+    public String verifyAndGetSubFromToken(OAuth2TokenSet tokenSet) {
         GoogleIdToken idToken;
         try {
             idToken = googleIdTokenVerifier.verify(tokenSet.getIdToken());
@@ -31,9 +30,9 @@ public class GoogleTokenVerifier implements TokenVerifier {
     }
 
     @Override
-    public boolean verifyOAuthToken(String token) {
+    public boolean verifyToken(OAuth2TokenPair token) {
         try {
-            googleIdTokenVerifier.verify(token);
+            googleIdTokenVerifier.verify(token.getOpenIdToken());
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

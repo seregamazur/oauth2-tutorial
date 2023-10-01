@@ -48,6 +48,16 @@ export async function getAccountInfo() {
     });
 }
 
+export async function getPaymentMethods() {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/adyen/payment-methods', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getToken()
+        }
+    });
+}
+
 export async function identifyEmail(email) {
     return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/identify?email=' + email, {
         method: 'GET',

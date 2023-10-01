@@ -1,6 +1,12 @@
 server:
   port: 8081
 
+
+adyen:
+  api-key: ${ADYEN_API_KEY}
+  secret-key: ${ADYEN_SECRET_KEY}
+  merchant-account: ${ADYEN_MERCHANT_ACCOUNT}
+
 resource:
   location: http://localhost:3000/redirect
 

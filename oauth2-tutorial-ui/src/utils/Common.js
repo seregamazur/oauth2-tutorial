@@ -24,6 +24,7 @@ export const setToken = (token) => {
     localStorage.setItem('token', token);
 }
 
+//2fa
 export async function enableTwoFactor() {
     return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/enable-2fa', {
         method: 'GET',
@@ -38,19 +39,10 @@ export const twoFactorEnabled = () => {
     return decodedToken.two_factor_enabled; // Assuming 'enable_2fa' is a claim in the JWT
 }
 
+//login
 export async function getAccountInfo() {
     return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/account', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getToken()
-        }
-    });
-}
-
-export async function getPaymentMethods() {
-    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/adyen/payment-methods', {
-        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + getToken()
@@ -63,6 +55,28 @@ export async function identifyEmail(email) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
+        }
+    });
+}
+
+//payments
+export async function getPaymentMethods(data) {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/adyen/payment-methods', {
+        method: 'POST',
+        body: data ? JSON.stringify(data) : "",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getToken()
+        }
+    });
+}
+
+export async function initiatePayment() {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/adyen/initiate-payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getToken()
         }
     });
 }

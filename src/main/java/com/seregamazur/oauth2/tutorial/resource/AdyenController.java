@@ -22,6 +22,7 @@ import com.adyen.model.checkout.Amount;
 import com.adyen.model.checkout.LineItem;
 import com.adyen.model.checkout.PaymentCompletionDetails;
 import com.adyen.model.checkout.PaymentDetailsRequest;
+import com.adyen.model.checkout.PaymentDetailsResponse;
 import com.adyen.model.checkout.PaymentMethodsRequest;
 import com.adyen.model.checkout.PaymentMethodsResponse;
 import com.adyen.model.checkout.PaymentRequest;
@@ -51,8 +52,19 @@ public class AdyenController {
         this.paymentsApi = new PaymentsApi(client);
     }
 
+    @PostMapping("/api/v1/adyen/payment-methods")
+    public ResponseEntity<PaymentMethodsResponse> paymentMethods() throws IOException, ApiException {
+        var paymentMethodsRequest = new PaymentMethodsRequest();
+        paymentMethodsRequest.setMerchantAccount(merchantAccount);
+        paymentMethodsRequest.setChannel(PaymentMethodsRequest.ChannelEnum.WEB);
+
+        log.info("REST request to get Adyen payment methods {}", paymentMethodsRequest);
+        var response = paymentsApi.paymentMethods(paymentMethodsRequest);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping("/api/v1/adyen/initiate-payment")
-    public ResponseEntity<PaymentResponse> payments(@RequestHeader String host, @RequestBody PaymentRequest body, HttpServletRequest request) throws IOException, ApiException {
+    public ResponseEntity<PaymentResponse> payments(@RequestBody PaymentRequest body, HttpServletRequest request) throws IOException, ApiException {
         var paymentRequest = new PaymentRequest();
 
         var orderRef = UUID.randomUUID().toString();
@@ -63,7 +75,7 @@ public class AdyenController {
         paymentRequest.setMerchantAccount(merchantAccount); // required
         paymentRequest.setChannel(PaymentRequest.ChannelEnum.WEB);
         paymentRequest.setReference(orderRef); // required
-        paymentRequest.setReturnUrl(request.getScheme() + "://" + host + "/api/handleShopperRedirect?orderRef=" + orderRef);
+        paymentRequest.setReturnUrl(request.getScheme() + "://localhost:8080/api/handleShopperRedirect?orderRef=" + orderRef);
 
         paymentRequest.setAmount(amount);
         // set lineItems required for some payment methods (ie Klarna)
@@ -74,7 +86,7 @@ public class AdyenController {
         // required for 3ds2 native flow
         paymentRequest.setAdditionalData(Collections.singletonMap("allow3DS2", "true"));
         // required for 3ds2 native flow
-        paymentRequest.setOrigin(request.getScheme() + "://" + host);
+        paymentRequest.setOrigin(request.getScheme() + "://localhost:8080");
         // required for 3ds2
         paymentRequest.setBrowserInfo(body.getBrowserInfo());
         // required by some issuers for 3ds2
@@ -86,15 +98,12 @@ public class AdyenController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/api/v1/adyen/payment-methods")
-    public ResponseEntity<PaymentMethodsResponse> paymentMethods() throws IOException, ApiException {
-        var paymentMethodsRequest = new PaymentMethodsRequest();
-        paymentMethodsRequest.setMerchantAccount(merchantAccount);
-        paymentMethodsRequest.setChannel(PaymentMethodsRequest.ChannelEnum.WEB);
-
-        log.info("REST request to get Adyen payment methods {}", paymentMethodsRequest);
-        var response = paymentsApi.paymentMethods(paymentMethodsRequest);
-        return ResponseEntity.ok().body(response);
+    @PostMapping("/submitAdditionalDetails")
+    public ResponseEntity<PaymentDetailsResponse> payments(@RequestBody PaymentDetailsRequest detailsRequest) throws IOException, ApiException {
+        log.info("REST request to make Adyen payment details {}", detailsRequest);
+        var response = paymentsApi.paymentsDetails(detailsRequest);
+        return ResponseEntity.ok()
+            .body(response);
     }
 
     @GetMapping("/handleShopperRedirect")

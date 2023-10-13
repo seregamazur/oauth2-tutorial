@@ -19,9 +19,9 @@ public class GoogleOAuth2ClientImpl implements GoogleOAuth2Client {
     private String redirectUri;
 
     @Autowired
-    private GoogleClient clientAuthorization;
+    private GoogleFeignClient clientAuthorization;
     @Autowired
-    private GoogleClientData clientAuthorizationData;
+    private GoogleFeignClientData clientAuthorizationData;
 
     @Override
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {

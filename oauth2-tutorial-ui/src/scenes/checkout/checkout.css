@@ -1,56 +1,68 @@
-
-#payment-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* Initially hide all payment method divs */
+.payment-method.closed {
+    display: none;
 }
 
-#payment-page .container {
-    margin-top: 100px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1110px;
-    padding-left: 8px;
-    padding-right: 8px;
+.payment-methods {
+    flex: 1;
+    margin-bottom: 0;
+    max-width: 48%;
+    text-align: left;
+    display: block;
 }
-
-.checkout-component {
-    background: #f7f8f9;
-    border: 1px solid #e6e9eb;
-    border-radius: 12px;
-    margin: 8px 0;
+.container {
+    box-sizing: border-box;
+    flex: 1 1;
+    margin-bottom: 0;
+    max-width: 50%;
+    text-align: left;
 }
-
-/* Adyen Components */
-.payment {
-    width: 100%;
-    padding-top: 0px !important;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-@media screen and (max-width: 1076px) {
-    #payment-page .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .payment {
-        align-self: center;
-    }
-}
-
 .payment-container {
-    display: flex;
-    justify-content: center;
-    background: #f7f8f9;
-    border: 1px solid #e6e9eb;
-    border-radius: 12px;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin-bottom: 0;
+    max-width: 48%;
+    text-align: left;
+    display: block;
+}
+
+.payment-method {
+    align-items: center;
+    color: #00112c;
+    flex-wrap: nowrap;
+    font-size: 1em;
+    font-weight: 400;
+    justify-content: space-between;
+    padding: 12px 16px 12px 44px;
+    position: relative;
+    transition: background .1s ease-out;
     width: 100%;
-    height: 100%;
+    cursor: pointer;
+}
+
+h3 {
+    color: #667680;
+    font-size: .75em;
+    letter-spacing: 1.2px;
+    margin: 0 0 16px;
+    text-transform: uppercase;
+}
+
+/* Show the open payment method div */
+.payment-method.opened {
+    display: block;
+}
+
+.payment-method-icon {
+    width: 40px; /* Adjust to your preferred icon size */
+    height: 26px;
+    margin-right: 10px; /* Add spacing between icon and label */
+    margin-left: 10px; /* Add spacing between icon and label */
+    display: inline-block;
+}
+.payment-method-icon img {
+    width: 40px;
+    height: 26px;
 }

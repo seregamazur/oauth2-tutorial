@@ -3,6 +3,7 @@ package com.seregamazur.oauth2.tutorial.resource;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.adyen.Client;
@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-public class AdyenController {
+public class CheckoutController {
 
     private String adyenApiKey;
     private String adyenSecretKey;
@@ -42,7 +42,7 @@ public class AdyenController {
 
     private final PaymentsApi paymentsApi;
 
-    public AdyenController(@Value("${adyen.api-key}") String adyenApiKey,
+    public CheckoutController(@Value("${adyen.api-key}") String adyenApiKey,
         @Value("${adyen.secret-key}") String adyenSecretKey,
         @Value("${adyen.merchant-account}") String merchantAccount) {
         this.adyenApiKey = adyenApiKey;
@@ -52,14 +52,20 @@ public class AdyenController {
         this.paymentsApi = new PaymentsApi(client);
     }
 
-    @PostMapping("/api/v1/adyen/payment-methods")
-    public ResponseEntity<PaymentMethodsResponse> paymentMethods() throws IOException, ApiException {
-        var paymentMethodsRequest = new PaymentMethodsRequest();
-        paymentMethodsRequest.setMerchantAccount(merchantAccount);
-        paymentMethodsRequest.setChannel(PaymentMethodsRequest.ChannelEnum.WEB);
+    @GetMapping("/api/v1/payment-methods")
+    public ResponseEntity<PaymentMethodsResponse> paymentMethods(@RequestParam("country_code") String code) throws IOException, ApiException {
+        PaymentMethodsRequest request = new PaymentMethodsRequest();
+        request.setMerchantAccount(merchantAccount);
+        request.setCountryCode(code);
+        Amount amount = new Amount();
+        amount.setCurrency("PLN");
+        amount.setValue(100L);
+        request.setAmount(amount);
+        request.setShopperLocale(Locale.US.toString());
+        request.setChannel(PaymentMethodsRequest.ChannelEnum.WEB);
 
-        log.info("REST request to get Adyen payment methods {}", paymentMethodsRequest);
-        var response = paymentsApi.paymentMethods(paymentMethodsRequest);
+        log.info("REST request to get Adyen payment methods {}", request);
+        var response = paymentsApi.paymentMethods(request);
         return ResponseEntity.ok().body(response);
     }
 
@@ -69,7 +75,7 @@ public class AdyenController {
 
         var orderRef = UUID.randomUUID().toString();
         var amount = new Amount()
-            .currency("EUR")
+            .currency("PLN")
             .value(10000L); // value is 10€ in minor units
 
         paymentRequest.setMerchantAccount(merchantAccount); // required

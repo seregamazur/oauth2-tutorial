@@ -6,6 +6,11 @@ adyen:
   api-key: ${ADYEN_API_KEY}
   secret-key: ${ADYEN_SECRET_KEY}
   merchant-account: ${ADYEN_MERCHANT_ACCOUNT}
+  hmac-key: ${ADYEN_HMAC_KEY}
+
+#GEO data
+opencagedata:
+  api-key: ${OPENCAGEDATA_API_KEY}
 
 resource:
   location: http://localhost:3000/redirect

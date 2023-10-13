@@ -60,8 +60,9 @@ export async function identifyEmail(email) {
 }
 
 //payments
-export async function getPaymentMethods(data) {
-    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/adyen/payment-methods', {
+
+export async function getCountryCode(data) {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/location', {
         method: 'POST',
         body: data ? JSON.stringify(data) : "",
         headers: {
@@ -70,6 +71,23 @@ export async function getPaymentMethods(data) {
         }
     });
 }
+
+export async function getPaymentMethods(data) {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/payment-methods?country_code=' + data, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getToken()
+        }
+    });
+}
+
+export async function getPaymentMethodIcon(name) {
+    return await fetch(process.env.REACT_APP_ADYEN_URL + `/checkoutshopper/images/logos/${name}.svg`, {
+        method: 'GET'
+    });
+}
+
 
 export async function initiatePayment() {
     return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/adyen/initiate-payment', {

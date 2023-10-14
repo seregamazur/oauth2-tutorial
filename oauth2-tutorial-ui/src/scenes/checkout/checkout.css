@@ -3,6 +3,10 @@
     display: none;
 }
 
+.closed {
+    display: none;
+}
+
 .payment-methods {
     flex: 1;
     margin-bottom: 0;
@@ -10,6 +14,7 @@
     text-align: left;
     display: block;
 }
+
 .container {
     box-sizing: border-box;
     flex: 1 1;
@@ -17,6 +22,7 @@
     max-width: 50%;
     text-align: left;
 }
+
 .payment-container {
     position: absolute;
     left: 50%;
@@ -28,18 +34,34 @@
     display: block;
 }
 
-.payment-method {
+.payment-method-header {
+    display: flex;
     align-items: center;
+    text-align: center;
+}
+
+.payment-method {
     color: #00112c;
-    flex-wrap: nowrap;
     font-size: 1em;
     font-weight: 400;
-    justify-content: space-between;
     padding: 12px 16px 12px 44px;
     position: relative;
-    transition: background .1s ease-out;
+    transition: background .2s ease-in-out;
     width: 100%;
     cursor: pointer;
+    border: 1px solid #999;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    /*display: flex;*/
+    vertical-align: middle;
+}
+
+.selected {
+    background-color: #f7f8f9;
+}
+
+.unselected {
 }
 
 h3 {
@@ -50,18 +72,26 @@ h3 {
     text-transform: uppercase;
 }
 
+.opened {
+    display: block;
+    background-color: #f7f8f9;
+    margin-top: 10px;
+}
 /* Show the open payment method div */
 .payment-method.opened {
     display: block;
+    background-color: #f7f8f9;
 }
 
 .payment-method-icon {
-    width: 40px; /* Adjust to your preferred icon size */
+    width:  40px;
     height: 26px;
-    margin-right: 10px; /* Add spacing between icon and label */
-    margin-left: 10px; /* Add spacing between icon and label */
+    margin-right: 10px;
+    margin-left: 10px;
     display: inline-block;
+    vertical-align: middle;
 }
+
 .payment-method-icon img {
     width: 40px;
     height: 26px;

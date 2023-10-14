@@ -12,27 +12,44 @@ const Checkout = () => {
         const [locationData, setLocationData] = useState(null);
         const [paymentMethodsDivs, setPaymentMethodsDivs] = useState([]);
         const [openDivId, setOpenDivId] = useState(null);
+        const [selectedDiv, setSelectedDiv] = useState(null);
 
         // Function to handle location updates
         const handleLocationUpdate = (data) => {
             setLocationData(data);
         };
 
-        function toggleVisibility(divId) {
+        function toggleVisibility(methodId, containerId) {
             setOpenDivId((prevOpenDivId) => {
-                if (prevOpenDivId === divId) {
+                if (prevOpenDivId === methodId) {
                     document.getElementById(prevOpenDivId).classList.remove('opened');
                     document.getElementById(prevOpenDivId).classList.add('closed');
                     return null;
                 } else if (!prevOpenDivId) {
-                    document.getElementById(divId).classList.remove('closed');
-                    document.getElementById(divId).classList.add('opened');
-                    return divId;
+                    document.getElementById(methodId).classList.remove('closed');
+                    document.getElementById(methodId).classList.add('opened');
+                    return methodId;
                 } else {
                     document.getElementById(prevOpenDivId).classList.remove('opened');
                     document.getElementById(prevOpenDivId).classList.add('closed');
-                    document.getElementById(divId).classList.add('opened');
-                    return divId;
+                    document.getElementById(methodId).classList.add('opened');
+                    return methodId;
+                }
+            });
+            setSelectedDiv((prevOpenDivId) => {
+                if (prevOpenDivId === containerId) {
+                    document.getElementById(prevOpenDivId).classList.remove('selected');
+                    document.getElementById(prevOpenDivId).classList.add('unselected');
+                    return null;
+                } else if (!prevOpenDivId) {
+                    document.getElementById(containerId).classList.remove('unselected');
+                    document.getElementById(containerId).classList.add('selected');
+                    return containerId;
+                } else {
+                    document.getElementById(prevOpenDivId).classList.remove('selected');
+                    document.getElementById(prevOpenDivId).classList.add('unselected');
+                    document.getElementById(containerId).classList.add('selected');
+                    return containerId;
                 }
             });
         }
@@ -102,21 +119,20 @@ const Checkout = () => {
                     const mountedDivs = methods.map((method, index) => {
                         const divId = `payment-method-${method.type}`;
                         if (methods.length > 0 && index === 0) {
+                            setSelectedDiv(`payment-method-container-${method.type}`);
                             setOpenDivId(`payment-method-${method.type}`);
                         }
                         const icon = getIconPath(method.type); // Get the dynamic icon path
                         return (
-                            <div key={divId} onClick={() => toggleVisibility(divId)} className="payment-method">
-                                <div className="payment-method-icon">
-                                    {icon && <img src={icon} alt={method.name} />}
-                                </div>
-                                <label>
+                            <div key={divId} id={`payment-method-container-${method.type}`}
+                                 className={`payment-method ${divId === selectedDiv ? 'selected' : 'unselected'}`}>
+                                <div onClick={() => toggleVisibility(divId, `payment-method-container-${method.type}`)} className="payment-method-header">
+                                    <div className="payment-method-icon">
+                                        {icon && <img src={icon} alt={method.name}/>}
+                                    </div>
                                     {method.name}
-                                </label>
-                                <div
-                                    id={divId}
-                                    className={`payment-method ${index === 0 ? 'open' : 'closed'}`}
-                                >
+                                </div>
+                                <div id={divId} className={`${index === 0 ? 'opened' : 'closed'}`}>
                                 </div>
                             </div>
                         );
@@ -242,11 +258,13 @@ const Checkout = () => {
         return (
             <div>
                 <CustomerLocation onLocationUpdate={handleLocationUpdate}/>
+                <div>
                     <div>
                         <h3>Select your payment method</h3>
                         <div className="payment-container">
                             {paymentMethodsDivs}
                         </div>
+                    </div>
                 </div>
             </div>
         );

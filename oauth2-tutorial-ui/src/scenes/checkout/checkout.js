@@ -32,22 +32,25 @@ const Checkout = () => {
                 } else {
                     document.getElementById(prevOpenDivId).classList.remove('opened');
                     document.getElementById(prevOpenDivId).classList.add('closed');
+                    document.getElementById(methodId).classList.remove('closed');
                     document.getElementById(methodId).classList.add('opened');
                     return methodId;
                 }
             });
-            setSelectedDiv((prevOpenDivId) => {
-                if (prevOpenDivId === containerId) {
-                    document.getElementById(prevOpenDivId).classList.remove('selected');
-                    document.getElementById(prevOpenDivId).classList.add('unselected');
+
+            setSelectedDiv((prevSelectedDiv) => {
+                if (prevSelectedDiv === containerId) {
+                    document.getElementById(prevSelectedDiv).classList.remove('selected');
+                    document.getElementById(prevSelectedDiv).classList.add('unselected');
                     return null;
-                } else if (!prevOpenDivId) {
+                } else if (!prevSelectedDiv) {
                     document.getElementById(containerId).classList.remove('unselected');
                     document.getElementById(containerId).classList.add('selected');
                     return containerId;
                 } else {
-                    document.getElementById(prevOpenDivId).classList.remove('selected');
-                    document.getElementById(prevOpenDivId).classList.add('unselected');
+                    document.getElementById(prevSelectedDiv).classList.remove('selected');
+                    document.getElementById(prevSelectedDiv).classList.add('unselected');
+                    document.getElementById(containerId).classList.remove('unselected');
                     document.getElementById(containerId).classList.add('selected');
                     return containerId;
                 }
@@ -125,15 +128,22 @@ const Checkout = () => {
                         const icon = getIconPath(method.type); // Get the dynamic icon path
                         return (
                             <div key={divId} id={`payment-method-container-${method.type}`}
-                                 className={`payment-method ${divId === selectedDiv ? 'selected' : 'unselected'}`}>
-                                <div onClick={() => toggleVisibility(divId, `payment-method-container-${method.type}`)} className="payment-method-header">
+                                 className={`payment-method ${index === 0 ? 'selected' : 'unselected'}`}>
+                                <label
+                                    className="radio">
                                     <div className="payment-method-icon">
                                         {icon && <img src={icon} alt={method.name}/>}
                                     </div>
                                     {method.name}
-                                </div>
-                                <div id={divId} className={`${index === 0 ? 'opened' : 'closed'}`}>
-                                </div>
+                                    <input
+                                        type="radio"
+                                        name="payment-method-radio"
+                                        checked={divId === openDivId}
+                                        onChange={() => toggleVisibility(divId, `payment-method-container-${method.type}`)}
+                                    />
+                                    <span className="checkmark"></span>
+                                </label>
+                                <div id={divId} className={`${index === 0 ? 'opened' : 'closed'}`}></div>
                             </div>
                         );
                     });
@@ -150,63 +160,6 @@ const Checkout = () => {
             }
         }
 
-        // Function to initialize checkout and fetch payment methods
-        // async function initCheckout() {
-        //     if (locationData) {
-        //         // Call your API with the location data
-        //         const countryCodeResponse = await getCountryCode(locationData);
-        //         const countryCode = await countryCodeResponse.json();
-        //         const paymentMethodsResponse = await getPaymentMethods(countryCode.country_code);
-        //         const paymentMethodsObject = await paymentMethodsResponse.json();
-        //
-        //         if (paymentMethodsObject && Array.isArray(paymentMethodsObject.paymentMethods)) {
-        //             setPaymentMethods(paymentMethodsObject.paymentMethods);
-        //
-        //
-        //
-        //         }
-        //         console.log('Payment Methods Response:', paymentMethodsObject);
-        //     }
-        // }
-
-        // const initCheckoutInstances = async () => {
-        //     const instances = {};
-        //     for (const method of paymentMethods) {
-        //         const divId = `payment-method-${method.type}`;
-        //         const configuration = {
-        //             paymentMethodsResponse: paymentMethodsObject,
-        //             clientKey,
-        //             locale: "en_US",
-        //             environment: "test",
-        //             showPayButton: true,
-        //             paymentMethodsConfiguration: {
-        //                 // ... (your payment methods configuration)
-        //             },
-        //             onSubmit: (state, component) => {
-        //                 if (state.isValid) {
-        //                     // initiatePayment(state.data)
-        //                     handleSubmission(state, component, "/api/v1/adyen/initiate-payment");
-        //                 }
-        //             },
-        //             onAdditionalDetails: (state, component) => {
-        //                 handleSubmission(state, component, "/api/submitAdditionalDetails");
-        //             },
-        //         };
-        //
-        //         const checkout = await AdyenCheckout(configuration);
-        //         instances[method.type] = checkout;
-        //     }
-        //     setCheckoutInstances(instances);
-        // };
-        //
-        // const togglePaymentMethod = (methodType) => {
-        //     if (selectedMethod === methodType) {
-        //         setSelectedMethod(null);
-        //     } else {
-        //         setSelectedMethod(methodType);
-        //     }
-        // };
-
         async function handleSubmission(state, component, url) {
             try {
                 const res = await callServer(url, state.data);
@@ -217,7 +170,6 @@ const Checkout = () => {
             }
         }
 
-// Calls your server endpoints
         async function callServer(url, data) {
             const res = await fetch(process.env.REACT_APP_BACKEND_URL + url, {
                 method: "POST",
@@ -231,7 +183,6 @@ const Checkout = () => {
             return await res.json();
         }
 
-// Handles responses sent from your server to the client
         function handleServerResponse(res, component) {
             if (res.action) {
                 component.handleAction(res.action);
@@ -254,19 +205,16 @@ const Checkout = () => {
             }
         }
 
-
         return (
-            <div>
+            <>
                 <CustomerLocation onLocationUpdate={handleLocationUpdate}/>
                 <div>
-                    <div>
-                        <h3>Select your payment method</h3>
-                        <div className="payment-container">
-                            {paymentMethodsDivs}
-                        </div>
+                    <h3>Select your payment method</h3>
+                    <div className="payment-container">
+                        {paymentMethodsDivs}
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 ;

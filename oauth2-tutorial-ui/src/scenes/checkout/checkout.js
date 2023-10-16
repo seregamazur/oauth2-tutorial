@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './checkout.css';
 import CustomerLocation from '../../components/CustomerLocation';
-import {getCountryCode, getPaymentMethods, getToken} from '../../utils/Common';
+import * as Common from '../../utils/Common';
+import {getCountryCode, getToken} from '../../utils/Common';
 import AdyenCheckout from "@adyen/adyen-web";
 import {getIconPath} from "./paymentMethodIcon";
 
@@ -19,16 +20,16 @@ const Checkout = () => {
             setLocationData(data);
         };
 
+        function isGooglePayAvailable(methods) {
+            return methods.some((method) => method.type === 'googlepay');
+        }
+
         function toggleVisibility(methodId, containerId) {
             setOpenDivId((prevOpenDivId) => {
                 if (prevOpenDivId === methodId) {
                     document.getElementById(prevOpenDivId).classList.remove('opened');
                     document.getElementById(prevOpenDivId).classList.add('closed');
                     return null;
-                } else if (!prevOpenDivId) {
-                    document.getElementById(methodId).classList.remove('closed');
-                    document.getElementById(methodId).classList.add('opened');
-                    return methodId;
                 } else {
                     document.getElementById(prevOpenDivId).classList.remove('opened');
                     document.getElementById(prevOpenDivId).classList.add('closed');
@@ -37,16 +38,11 @@ const Checkout = () => {
                     return methodId;
                 }
             });
-
             setSelectedDiv((prevSelectedDiv) => {
                 if (prevSelectedDiv === containerId) {
                     document.getElementById(prevSelectedDiv).classList.remove('selected');
                     document.getElementById(prevSelectedDiv).classList.add('unselected');
                     return null;
-                } else if (!prevSelectedDiv) {
-                    document.getElementById(containerId).classList.remove('unselected');
-                    document.getElementById(containerId).classList.add('selected');
-                    return containerId;
                 } else {
                     document.getElementById(prevSelectedDiv).classList.remove('selected');
                     document.getElementById(prevSelectedDiv).classList.add('unselected');
@@ -61,73 +57,90 @@ const Checkout = () => {
             initPaymentMethods();
         }, [locationData]);
 
+        function adyenConfig(paymentMethodsObject) {
+            return {
+                paymentMethodsResponse: paymentMethodsObject,
+                clientKey,
+                locale: "en_US",
+                environment: "test",
+                showPayButton: true,
+                paymentMethodsConfiguration: {
+                    googlepay: {
+                        environment: 'test',
+                        buttonSizeMode: 'fill'
+                    },
+                    ideal: {
+                        showImage: true,
+                    },
+                    card: {
+                        styles: {
+                            base: {
+                                color: "#000000" // CSS color code for white
+                            }
+                        },
+                        hasHolderName: true,
+                        holderNameRequired: true,
+                        name: "Credit or debit card",
+                        amount: {
+                            value: 1000,
+                            currency: "EUR",
+                        },
+                    },
+                    paypal: {
+                        amount: {
+                            value: 1000,
+                            currency: "USD",
+                        },
+                        environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
+                        countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
+                        onCancel: (data, component) => {
+                            component.setStatus('ready');
+                        },
+                    },
+                    blik: {
+                        environment: "test"
+                    }
+                },
+                onSubmit: (state, component) => {
+                    if (state.isValid) {
+                        // initiatePayment(state.data)
+                        handleSubmission(state, component, "/api/v1/adyen/initiate-payment");
+                    }
+                },
+                onAdditionalDetails: (state, component) => {
+                    handleSubmission(state, component, "/api/submitAdditionalDetails");
+                },
+            };
+        }
+
+        async function getPaymentMethods() {
+            const countryCodeResponse = await getCountryCode(locationData);
+            const countryCode = await countryCodeResponse.json();
+            const paymentMethodsResponse = await Common.getPaymentMethods(countryCode.country_code);
+            return await paymentMethodsResponse.json();
+        }
+
         async function initPaymentMethods() {
             if (locationData) {
-                const countryCodeResponse = await getCountryCode(locationData);
-                const countryCode = await countryCodeResponse.json();
-                const paymentMethodsResponse = await getPaymentMethods(countryCode.country_code);
-                const paymentMethodsObject = await paymentMethodsResponse.json();
+                let paymentMethodsObject = await getPaymentMethods();
                 let methods = paymentMethodsObject.paymentMethods;
+                if (paymentMethodsObject && Array.isArray(methods) && methods.length > 0) {
+                    const configuration = adyenConfig(paymentMethodsObject);
 
-                if (paymentMethodsObject && Array.isArray(methods)) {
-                    const configuration = {
-                        paymentMethodsResponse: paymentMethodsObject,
-                        clientKey,
-                        locale: "en_US",
-                        environment: "test",
-                        showPayButton: true,
-                        paymentMethodsConfiguration: {
-                            ideal: {
-                                showImage: true,
-                            },
-                            card: {
-                                styles: {
-                                    base: {
-                                        color: "#000000" // CSS color code for white
-                                    }
-                                },
-                                hasHolderName: true,
-                                holderNameRequired: true,
-                                name: "Credit or debit card",
-                                amount: {
-                                    value: 1000,
-                                    currency: "EUR",
-                                },
-                            },
-                            paypal: {
-                                amount: {
-                                    value: 1000,
-                                    currency: "USD",
-                                },
-                                environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-                                countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
-                                onCancel: (data, component) => {
-                                    component.setStatus('ready');
-                                },
-                            },
-                            blik: {
-                                environment: "test"
-                            }
-                        },
-                        onSubmit: (state, component) => {
-                            if (state.isValid) {
-                                // initiatePayment(state.data)
-                                handleSubmission(state, component, "/api/v1/adyen/initiate-payment");
-                            }
-                        },
-                        onAdditionalDetails: (state, component) => {
-                            handleSubmission(state, component, "/api/submitAdditionalDetails");
-                        },
-                    };
                     const mountedDivs = methods.map((method, index) => {
-                        const divId = `payment-method-${method.type}`;
-                        if (methods.length > 0 && index === 0) {
+                        if (index === 0) {
                             setSelectedDiv(`payment-method-container-${method.type}`);
                             setOpenDivId(`payment-method-${method.type}`);
                         }
-                        const icon = getIconPath(method.type); // Get the dynamic icon path
+                        const divId = `payment-method-${method.type}`;
+                        if (divId === 'payment-method-googlepay') {
+                            return <div id={divId} className='opened'/>
+                        }
+
+                        const icon = getIconPath(method.type);
+
                         return (
-                            <div key={divId} id={`payment-method-container-${method.type}`}
+                            <div key={index} id={`payment-method-container-${method.type}`}
                                  className={`payment-method ${index === 0 ? 'selected' : 'unselected'}`}>
                                 <label
                                     className="radio">
@@ -137,9 +150,11 @@ const Checkout = () => {
                                     {method.name}
                                     <input
                                         type="radio"
-                                        name="payment-method-radio"
-                                        checked={divId === openDivId}
-                                        onChange={() => toggleVisibility(divId, `payment-method-container-${method.type}`)}
+                                        name={`payment-method-radio`}
+                                        defaultChecked={divId === openDivId || index === 0}
+                                        onChange={() => {
+                                            toggleVisibility(divId, `payment-method-container-${method.type}`);
+                                        }}
                                     />
                                     <span className="checkmark"></span>
                                 </label>
@@ -211,6 +226,11 @@ const Checkout = () => {
                 <div>
                     <h3>Select your payment method</h3>
                     <div className="payment-container">
+                        <h4>Pay with:</h4>
+                        {isGooglePayAvailable && <div id='payment-method-googlepay' className={'opened'}></div>}
+                        {isGooglePayAvailable && <div className="line">
+                            <span>OR</span>
+                        </div>}
                         {paymentMethodsDivs}
                     </div>
                 </div>

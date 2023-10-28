@@ -15,6 +15,9 @@ const Checkout = () => {
         const [instantPaymentMethodDiv, setInstantPaymentMethodDiv] = useState(null);
         const [openDivId, setOpenDivId] = useState(null);
         const [selectedDiv, setSelectedDiv] = useState(null);
+        const [radioButtonState, setRadioButtonState] = useState('payment-method__header__radio');
+        const [firstRadioSelected, setFirstRadioSelected] = useState(null);
+        const instantPaymentMethod = 'googlepay';
 
         const handleLocationUpdate = (data) => {
             setLocationData(data);
@@ -95,8 +98,9 @@ const Checkout = () => {
                     }
                 },
                 onSubmit: (state, component) => {
+                    //add dissapear other methods and this one increasis in size
                     if (state.isValid) {
-                        // initiatePayment(state.data)
+                        blockNonSelectedMethods(state.data.paymentMethod.type);
                         handleSubmission(state, component, "/api/v1/adyen/initiate-payment");
                     }
                 },
@@ -180,9 +184,7 @@ const Checkout = () => {
 
                     // Initialize the checkout for each payment method
                     for (const method of methods) {
-                        // const index = methods.indexOf(method);
                         const divId = `payment-method-${method.type}`;
-                        const checkout = await AdyenCheckout(configuration);
                         checkout.create(method.type).mount(document.getElementById(divId));
                     }
                 }

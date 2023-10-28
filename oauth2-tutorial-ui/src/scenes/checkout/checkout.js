@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './checkout.css';
 import CustomerLocation from '../../components/CustomerLocation';
 import * as Common from '../../utils/Common';
@@ -11,45 +11,38 @@ const clientKey = 'test_QOXTJVU2NBG5RKGDF47XYUZJ2UMYOZS4'
 const Checkout = () => {
         // State to store location data
         const [locationData, setLocationData] = useState(null);
-        const [paymentMethodsDivs, setPaymentMethodsDivs] = useState([]);
+        const [traditionalPaymentMethodDivs, setTraditionalPaymentMethodDivs] = useState([]);
+        const [instantPaymentMethodDiv, setInstantPaymentMethodDiv] = useState(null);
         const [openDivId, setOpenDivId] = useState(null);
         const [selectedDiv, setSelectedDiv] = useState(null);
 
-        // Function to handle location updates
         const handleLocationUpdate = (data) => {
             setLocationData(data);
         };
 
-        function isGooglePayAvailable(methods) {
-            return methods.some((method) => method.type === 'googlepay');
+        function isInstantPaymentMethodAvailable(methods) {
+            return methods.some((method) => method.type === instantPaymentMethod);
         }
 
-        function toggleVisibility(methodId, containerId) {
+        function toggleVisibility(methodId, methodType) {
             setOpenDivId((prevOpenDivId) => {
-                if (prevOpenDivId === methodId) {
-                    document.getElementById(prevOpenDivId).classList.remove('opened');
-                    document.getElementById(prevOpenDivId).classList.add('closed');
-                    return null;
-                } else {
-                    document.getElementById(prevOpenDivId).classList.remove('opened');
-                    document.getElementById(prevOpenDivId).classList.add('closed');
-                    document.getElementById(methodId).classList.remove('closed');
-                    document.getElementById(methodId).classList.add('opened');
-                    return methodId;
-                }
+                document.getElementById(prevOpenDivId).classList.remove('payment-method__details--opened');
+                document.getElementById(prevOpenDivId).classList.add('payment-method__details');
+                document.getElementById(methodId).classList.remove('payment-method__details');
+                document.getElementById(methodId).classList.add('payment-method__details--opened');
+                return methodId;
             });
             setSelectedDiv((prevSelectedDiv) => {
-                if (prevSelectedDiv === containerId) {
-                    document.getElementById(prevSelectedDiv).classList.remove('selected');
-                    document.getElementById(prevSelectedDiv).classList.add('unselected');
-                    return null;
-                } else {
-                    document.getElementById(prevSelectedDiv).classList.remove('selected');
-                    document.getElementById(prevSelectedDiv).classList.add('unselected');
-                    document.getElementById(containerId).classList.remove('unselected');
-                    document.getElementById(containerId).classList.add('selected');
-                    return containerId;
-                }
+                document.getElementById(prevSelectedDiv).classList.remove('payment-method--selected');
+                document.getElementById(prevSelectedDiv).classList.add('payment-method');
+                document.getElementById(`payment-method-item-${methodType}`).classList.remove('payment-method');
+                document.getElementById(`payment-method-item-${methodType}`).classList.add('payment-method--selected');
+                return `payment-method-item-${methodType}`;
+            });
+            setRadioButtonState((prevState) => {
+                document.getElementById(prevState).classList.remove('payment-method__header__radio--selected');
+                document.getElementById(`${methodType}-radio`).classList.add('payment-method__header__radio--selected');
+                return `${methodType}-radio`;
             });
         }
 
@@ -57,8 +50,8 @@ const Checkout = () => {
             initPaymentMethods();
         }, [locationData]);
 
-        function adyenConfig(paymentMethodsObject) {
-            return {
+        function adyenCheckout(paymentMethodsObject) {
+            let config = {
                 paymentMethodsResponse: paymentMethodsObject,
                 clientKey,
                 locale: "en_US",
@@ -111,6 +104,19 @@ const Checkout = () => {
                     handleSubmission(state, component, "/api/submitAdditionalDetails");
                 },
             };
+            return AdyenCheckout(config);
+        }
+
+        async function blockNonSelectedMethods(methodType) {
+            if (instantPaymentMethod !== methodType) {
+                document.getElementById(`payment-method-${instantPaymentMethod}`).classList.remove('instant-payment-method__details--opened');
+                document.getElementById(`payment-method-${instantPaymentMethod}`).classList.add('instant-payment-method__details--blocked');
+            }
+            const listItems = document.querySelectorAll('li');
+            listItems.forEach((li) => {
+                if (li.id !== `payment-method-item-${methodType}`)
+                    li.classList.add('payment-method--blocked');
+            });
         }
 
         async function getPaymentMethods() {
@@ -120,49 +126,57 @@ const Checkout = () => {
             return await paymentMethodsResponse.json();
         }
 
+        function setFirstPaymentOpened(index, method) {
+            if (index === 0) {
+                setSelectedDiv(`payment-method-item-${method.type}`);
+                setOpenDivId(`payment-method-${method.type}`);
+                setRadioButtonState(`${method.type}-radio`);
+                setFirstRadioSelected(`${method.type}-radio`);
+            }
+        }
+
+        function initializedPaymentMethod(method, index) {
+            const divId = `payment-method-${method.type}`;
+
+            const icon = getIconPath(method.type);
+
+            return (
+                <li key={index} id={`payment-method-item-${method.type}`}
+                    onClick={() => {
+                        toggleVisibility(divId, method.type);
+                    }}
+                    className={`payment-method${index === 0 ? '--selected' : ''}`}>
+                    <div className={'payment-method__header'}>
+                        <button className="payment-method__header__title" role={"radio"} type={"button"}>
+                                            <span id={`${method.type}-radio`} aria-hidden={true}
+                                                  className={`${index === 0 ? 'payment-method__header__radio payment-method__header__radio--selected' : 'payment-method__header__radio'}`}/>
+                            <span className="payment-method__icon">{icon && <img src={icon} alt={method.name}/>}</span>
+                            <span className={"payment-method__header__name"}>{method.name}</span>
+                        </button>
+                    </div>
+                    <div id={divId} className={`${index === 0
+                        ? 'payment-method__details--opened' : 'payment-method__details'}`}></div>
+                </li>
+            );
+        }
+
         async function initPaymentMethods() {
             if (locationData) {
                 let paymentMethodsObject = await getPaymentMethods();
                 let methods = paymentMethodsObject.paymentMethods;
                 if (paymentMethodsObject && Array.isArray(methods) && methods.length > 0) {
-                    const configuration = adyenConfig(paymentMethodsObject);
+                    const checkout = await adyenCheckout(paymentMethodsObject);
 
-                    const mountedDivs = methods.map((method, index) => {
-                        if (index === 0) {
-                            setSelectedDiv(`payment-method-container-${method.type}`);
-                            setOpenDivId(`payment-method-${method.type}`);
-                        }
-                        const divId = `payment-method-${method.type}`;
-                        if (divId === 'payment-method-googlepay') {
-                            return <div id={divId} className='opened'/>
-                        }
+                    const traditionalPaymentMethodDivs = methods.filter(m => m.type !== instantPaymentMethod)
+                        .map((method, index) => {
+                            setFirstPaymentOpened(index, method);
+                            return initializedPaymentMethod(method, index);
+                        });
+                    setTraditionalPaymentMethodDivs(traditionalPaymentMethodDivs);
 
-                        const icon = getIconPath(method.type);
-
-                        return (
-                            <div key={index} id={`payment-method-container-${method.type}`}
-                                 className={`payment-method ${index === 0 ? 'selected' : 'unselected'}`}>
-                                <label
-                                    className="radio">
-                                    <div className="payment-method-icon">
-                                        {icon && <img src={icon} alt={method.name}/>}
-                                    </div>
-                                    {method.name}
-                                    <input
-                                        type="radio"
-                                        name={`payment-method-radio`}
-                                        defaultChecked={divId === openDivId || index === 0}
-                                        onChange={() => {
-                                            toggleVisibility(divId, `payment-method-container-${method.type}`);
-                                        }}
-                                    />
-                                    <span className="checkmark"></span>
-                                </label>
-                                <div id={divId} className={`${index === 0 ? 'opened' : 'closed'}`}></div>
-                            </div>
-                        );
-                    });
-                    setPaymentMethodsDivs(mountedDivs);
+                    if (isInstantPaymentMethodAvailable(methods)) {
+                        setInstantPaymentMethodDiv(<div id='payment-method-googlepay' className={'instant-payment-method__details--opened'}/>);
+                    }
 
                     // Initialize the checkout for each payment method
                     for (const method of methods) {
@@ -223,15 +237,13 @@ const Checkout = () => {
         return (
             <>
                 <CustomerLocation onLocationUpdate={handleLocationUpdate}/>
-                <div>
-                    <h3>Select your payment method</h3>
+                <div className={"checkout-payment-form"}>
+                    <h3 className={"checkout-payment-form__title"}>Select your payment method</h3>
                     <div className="payment-container">
-                        <h4>Pay with:</h4>
-                        {isGooglePayAvailable && <div id='payment-method-googlepay' className={'opened'}></div>}
-                        {isGooglePayAvailable && <div className="line">
-                            <span>OR</span>
-                        </div>}
-                        {paymentMethodsDivs}
+                        <ul className={"instant-payment-list"}>{instantPaymentMethodDiv}</ul>
+                        <div className={"payment-lists-separator"}>or pay with</div>
+                        <ul className={"traditional-payment-list"} role={"radiogroup"}
+                            required={true}>{traditionalPaymentMethodDivs}</ul>
                     </div>
                 </div>
             </>

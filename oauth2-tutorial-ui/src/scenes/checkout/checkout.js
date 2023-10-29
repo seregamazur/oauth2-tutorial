@@ -190,6 +190,7 @@ const Checkout = () => {
                         checkout.create(method.type).mount(document.getElementById(divId));
                     }
                 }
+                setLoading(false);
             }
         }
 

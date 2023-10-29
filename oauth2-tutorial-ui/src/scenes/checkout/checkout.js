@@ -1,10 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './checkout.css';
 import CustomerLocation from '../../components/CustomerLocation';
 import * as Common from '../../utils/Common';
 import {getCountryCode, getToken} from '../../utils/Common';
 import AdyenCheckout from "@adyen/adyen-web";
 import {getIconPath} from "./paymentMethodIcon";
+import LoadingScreen from "../common/LoadingScreen";
 
 const clientKey = 'test_QOXTJVU2NBG5RKGDF47XYUZJ2UMYOZS4'
 
@@ -17,6 +18,7 @@ const Checkout = () => {
         const [selectedDiv, setSelectedDiv] = useState(null);
         const [radioButtonState, setRadioButtonState] = useState('payment-method__header__radio');
         const [firstRadioSelected, setFirstRadioSelected] = useState(null);
+        const [loading, setLoading] = useState(true);
         const instantPaymentMethod = 'googlepay';
 
         const handleLocationUpdate = (data) => {
@@ -236,18 +238,24 @@ const Checkout = () => {
             }
         }
 
+        const loadingScreen = loading ? <LoadingScreen/> : null;
+
         return (
             <>
                 <CustomerLocation onLocationUpdate={handleLocationUpdate}/>
-                <div className={"checkout-payment-form"}>
+                <div className={`checkout-payment-form`}>
                     <h3 className={"checkout-payment-form__title"}>Select your payment method</h3>
                     <div className="payment-container">
-                        <ul className={"instant-payment-list"}>{instantPaymentMethodDiv}</ul>
-                        <div className={"payment-lists-separator"}>or pay with</div>
-                        <ul className={"traditional-payment-list"} role={"radiogroup"}
-                            required={true}>{traditionalPaymentMethodDivs}</ul>
+                        <>
+                            <ul className={"instant-payment-list"}>{instantPaymentMethodDiv}</ul>
+                            <div className={"payment-lists-separator"}>or pay with</div>
+                            <ul className={"traditional-payment-list"} role={"radiogroup"}>
+                                {traditionalPaymentMethodDivs}
+                            </ul>
+                        </>
                     </div>
                 </div>
+                {loadingScreen}
             </>
         );
     }

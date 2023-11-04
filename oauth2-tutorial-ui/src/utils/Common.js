@@ -34,12 +34,51 @@ export async function enableTwoFactor() {
     });
 }
 
+export async function verifyTwoFactor(authenticatorCode) {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/verify-2fa?totpCode=' + authenticatorCode, {
+        method: 'POST',
+        headers: {
+            Authorization: 'Bearer ' + getToken(),
+            'Content-Type': 'application/json',
+        }
+    });
+}
+
 export const twoFactorEnabled = () => {
     const decodedToken = jwtDecode(getToken());
-    return decodedToken.two_factor_enabled; // Assuming 'enable_2fa' is a claim in the JWT
+    return decodedToken.two_factor_enabled;
 }
 
 //login
+export async function loginUser(email, password, rememberMe) {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/authenticate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            'email': email,
+            'password': password,
+            'rememberMe': rememberMe
+        })
+    });
+}
+
+export async function registerUser(email, firstName, lastName, password) {
+    return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/register', {
+        method: 'POST',
+        body: JSON.stringify({
+            'email': email,
+            'firstName': firstName,
+            'lastName': lastName,
+            'password': password
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
 export async function getAccountInfo() {
     return await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/account', {
         method: 'GET',
@@ -57,6 +96,15 @@ export async function identifyEmail(email) {
             'Content-Type': 'application/json'
         }
     });
+}
+
+
+export async function handleSocialLoginRedirect(siteName) {
+    try {
+        window.location.href = process.env.REACT_APP_BACKEND_URL + '/oauth2/authorization/' + siteName;
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 //payments

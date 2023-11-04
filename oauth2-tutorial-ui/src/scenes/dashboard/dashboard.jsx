@@ -10,18 +10,12 @@ import StatBox from "../../components/StatBox";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
 import {getAccountInfo, getToken} from "../../utils/Common";
-import TwoFactorModal from "../login/TwoFactorModal";
 
 const Dashboard = () => {
     const [theme, colorMode] = useMode();
     const colors = tokens(theme.palette.mode);
 
     const [isSidebar, setIsSidebar] = useState(true);
-    const [showTwoFactorModal, setShowTwoFactorModal] = useState(false);
-
-    const closeTwoFactorModal = () => {
-        setShowTwoFactorModal(false);
-    };
 
     const getUser = async () => {
         try {
@@ -52,14 +46,6 @@ const Dashboard = () => {
             throw new Error('Error: ' + error.message);
         }
     };
-
-    useEffect(() => {
-        // Call getUser() when the component mounts
-        let user1 = getUser();
-        if (user1.twoFactorEnabled === false) {
-            setShowTwoFactorModal(true);
-        }
-    }, []); // Empty dependency array means this effect runs only once on mount
 
     return (
         <>
@@ -167,9 +153,6 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                        {showTwoFactorModal && (
-                            <TwoFactorModal showModal={showTwoFactorModal} onClose={closeTwoFactorModal}/>
-                        )}
                 </ThemeProvider>
 
             </ColorModeContext.Provider>

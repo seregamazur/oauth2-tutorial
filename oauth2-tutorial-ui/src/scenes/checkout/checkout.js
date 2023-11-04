@@ -4,7 +4,7 @@ import CustomerLocation from '../../components/CustomerLocation';
 import * as Common from '../../utils/Common';
 import {getCountryCode, getToken} from '../../utils/Common';
 import AdyenCheckout from "@adyen/adyen-web";
-import {getIconPath} from "./paymentMethodIcon";
+import {getIconPath} from "./iconUtils";
 import LoadingScreen from "../common/LoadingScreen";
 
 const clientKey = 'test_QOXTJVU2NBG5RKGDF47XYUZJ2UMYOZS4'

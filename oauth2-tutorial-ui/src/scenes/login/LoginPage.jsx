@@ -1,15 +1,12 @@
 import React, {useState} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faFacebookSquare, faGithub, faGoogle} from '@fortawesome/free-brands-svg-icons';
-import {faLock} from '@fortawesome/free-solid-svg-icons';
 import './LoginPage.css';
 import {useNavigate} from 'react-router-dom';
-import {identifyEmail, setToken, twoFactorEnabled} from '../../utils/Common';
+import {handleSocialLoginRedirect, identifyEmail, loginUser, setToken} from '../../utils/Common';
 import SignUpModal from './SignUpModal';
 import {ColorModeContext, themeSettings, useMode} from "../global/theme";
 import Topbar from "../global/Topbar";
 import {CssBaseline, ThemeProvider} from "@mui/material";
-import TwoFactorModal from "./TwoFactorModal";
+import {getIconPath} from "../checkout/iconUtils";
 
 function LoginPage() {
 
@@ -18,7 +15,6 @@ function LoginPage() {
 
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
-    const [show2fa, setShow2fa] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +22,7 @@ function LoginPage() {
     const [errorMessage, setErrorMessage] = useState('');
     const [providers, setProviders] = useState(['GOOGLE', 'GITHUB', 'FACEBOOK', 'OKTA']);
     const [showProvidersMessage, setShowProvidersMessage] = useState(false);
-    const [showProviders, setShowProviders] = useState(false);
+    const [showChosenProviders, setShowChosenProviders] = useState(false);
 
     const openModal = () => {
         setShowModal(true);
@@ -36,26 +32,14 @@ function LoginPage() {
         setShowModal(false);
     };
 
-    const close2fa = () => {
-        setShow2fa(false);
-    };
-
     const revertToDefaultState = () => {
         setEmail(''); // Clear the email input field
         setShowPassword(false); // Hide password input field
         setRememberMe(false); // Uncheck remember me checkbox
         setErrorMessage(''); // Clear error message
-        setShowProviders(false); // Hide OAuth2 login buttons
+        setShowChosenProviders(false); // Hide OAuth2 login buttons
         setShowProvidersMessage(false); // Hide the OAuth2 message
         setProviders(['GOOGLE', 'GITHUB', 'FACEBOOK', 'OKTA']);
-    };
-
-    const handleSocialLoginRedirect = async (siteName) => {
-        try {
-            window.location.href = process.env.REACT_APP_BACKEND_URL + '/oauth2/authorization/' + siteName;
-        } catch (error) {
-            console.error('Error:', error);
-        }
     };
 
     const handleGoogleLogin = async () => {
@@ -92,7 +76,7 @@ function LoginPage() {
                     setErrorMessage('');
                     setShowProvidersMessage(true);
                     setProviders(authProviders || []);
-                    setShowProviders(authProviders && authProviders.length > 0);
+                    setShowChosenProviders(authProviders && authProviders.length > 0);
                 }
             } else if (response.status === 404) {
                 setErrorMessage('No user found with this email.');
@@ -115,30 +99,12 @@ function LoginPage() {
         formData.append('rememberMe', rememberMe);
 
         try {
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/authenticate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    'email': email,
-                    'password': password,
-                    'rememberMe': rememberMe
-                })
-            });
-
+            const response = await loginUser(email, password, rememberMe);
             if (response.ok) {
                 const responseData = await response.json();
                 const jwtValue = responseData.value;
                 setToken(jwtValue);
-                // Handle successful login here
-                console.log('Login successful');
-                const twoFactor = await twoFactorEnabled();
-                if (twoFactor === false) {
-                    navigate('/2fa');
-                } else {
-                    setShow2fa(true);
-                }
+                navigate('/2fa');
             } else {
                 // Handle login error here
                 console.error('Login failed');
@@ -155,10 +121,9 @@ function LoginPage() {
                 <ThemeProvider theme={theme}>
                     <CssBaseline/>
                     <Topbar switchStyleButtonOnly={true}/>
-                    <div className="container">
-                        <h2>Login</h2>
+                    <div id='login-container' className="login-container">
+                        <h3>Welcome back</h3>
                         <form onSubmit={showPassword ? handlePasswordSubmit : handleLogin}>
-                            <label htmlFor="email">Email</label>
                             <input
                                 autoFocus={true}
                                 type="email"
@@ -170,9 +135,9 @@ function LoginPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                disabled={showProviders}
+                                disabled={showChosenProviders}
                             />
-                            {showProviders && (
+                            {showChosenProviders && (
                                 <div className="provider-message">
                                     It looks like you've previously logged in using OAuth2.
                                 </div>
@@ -207,42 +172,45 @@ function LoginPage() {
                                 </>
                             )}
 
-                            {!showProviders && (
+                            {!showChosenProviders && (
                                 <>
-                                    <input type="submit" value={showPassword ? 'Login' : 'Next'}/>
+                                    <input type="submit" value={showPassword ? 'Login' : 'Continue'}/>
                                     <input type="button" id="register-btn" value="Create account" onClick={openModal}/>
-                                    <div className="line">
-                                        <span style={inputStyle.palette.input}>OR</span>
-                                    </div>
+                                    <div className="login-methods-separator">OR</div>
                                 </>
                             )}
 
                         </form>
-
-                        <div className="social-login">
+                        <div className="social-login-method">
                             {providers.includes("GOOGLE") &&
                                 (<button className="btn google" onClick={handleGoogleLogin}>
-                                    <FontAwesomeIcon icon={faGoogle}/> Sign in with Google
+                                    <span className="provider-icon">{<img src={getIconPath('google')} alt={'google'}/>}</span>
+                                    <span className="provider-name--google">Continue with Google</span>
                                 </button>)}
 
-                            {providers.includes("FACEBOOK") && (<button className="btn facebook" onClick={handleFacebookLogin}>
-                                <FontAwesomeIcon icon={faFacebookSquare}/> Sign in with Facebook
-                            </button>)}
+                            {providers.includes("FACEBOOK") &&
+                                (<button className="btn facebook" onClick={handleFacebookLogin}>
+                                    <span className="provider-icon">{<img src={getIconPath('facebook')} alt={'facebook'}/>}</span>
+                                    <span className="provider-name">Continue with Facebook</span>
+                                </button>)}
 
-                            {providers.includes("GITHUB") && (<button className="btn github" onClick={handleGithubLogin}>
-                                <FontAwesomeIcon icon={faGithub}/> Sign in with GitHub
-                            </button>)}
+                            {providers.includes("GITHUB") &&
+                                (<button className="btn github" onClick={handleGithubLogin}>
+                                    <span className="provider-icon"><img src={getIconPath('github')} alt={'github'}/></span>
+                                    <span className="provider-name">Continue with GitHub</span>
+                                </button>)}
 
-                            {providers.includes("OKTA") && (<button className="btn okta" onClick={handleOktaLogin}>
-                                <FontAwesomeIcon icon={faLock}/> Sign in with Okta
-                            </button>)}
-                            {showProviders && (
+                            {providers.includes("OKTA") &&
+                                (<button className="btn okta" onClick={handleOktaLogin}>
+                                    <span className="provider-icon">{<img src={getIconPath('okta')} alt={'okta'}/>}</span>
+                                    <span className="provider-name">Continue with Okta</span>
+                                </button>)}
+                            {showChosenProviders && (
                                 <input type="button" id="back-btn" value="Back" onClick={revertToDefaultState}/>
                             )}
                         </div>
-                        <SignUpModal showModal={showModal} onClose={closeModal}/>
-                        <TwoFactorModal showModal={show2fa} onClose={close2fa}/>
                     </div>
+                    <SignUpModal showModal={showModal} onClose={closeModal}/>
                 </ThemeProvider>
             </ColorModeContext.Provider>
         </>

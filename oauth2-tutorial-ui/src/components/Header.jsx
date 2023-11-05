@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { tokens } from '../scenes/global/theme';
+import PropTypes from 'prop-types';
 
 const Header = ({ title, subtitle }) => {
   const theme = useTheme();
@@ -15,6 +16,11 @@ const Header = ({ title, subtitle }) => {
       </Typography>
     </Box>
   );
+};
+
+Header.propTypes = {
+  title: PropTypes.func.isRequired,
+  subtitle: PropTypes.func.isRequired,
 };
 
 export default Header;

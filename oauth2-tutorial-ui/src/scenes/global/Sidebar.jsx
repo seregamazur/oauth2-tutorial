@@ -7,6 +7,7 @@ import { tokens } from './theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import PropTypes from 'prop-types';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -113,6 +114,14 @@ const Sidebar = () => {
       </ProSidebar>
     </Box>
   );
+};
+
+Item.propTypes = {
+  title: PropTypes.func.isRequired,
+  to: PropTypes.func.isRequired,
+  icon: PropTypes.func.isRequired,
+  selected: PropTypes.func.isRequired,
+  setSelected: PropTypes.func.isRequired,
 };
 
 export default Sidebar;

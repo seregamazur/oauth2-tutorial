@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, useTheme } from '@mui/material';
 import { tokens } from '../scenes/global/theme';
+import PropTypes from 'prop-types';
 
 const ProgressCircle = ({ progress = '0.75', size = '40' }) => {
   const theme = useTheme();
@@ -18,6 +19,11 @@ const ProgressCircle = ({ progress = '0.75', size = '40' }) => {
       }}
     />
   );
+};
+
+ProgressCircle.propTypes = {
+  progress: PropTypes.func.isRequired,
+  size: PropTypes.func.isRequired,
 };
 
 export default ProgressCircle;

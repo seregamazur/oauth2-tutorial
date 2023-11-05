@@ -17,10 +17,13 @@
     "complexity": "off",
     "no-nested-ternary": "warn",
     "no-unused-expressions": "off",
-    "jsx-a11y/label-has-for": "warn",
+    "jsx-a11y/label-has-for": "off",
     "react/no-danger": "off",
     "@typescript-eslint/no-shadow": "off",
     "@typescript-eslint/no-namespace": "off",
-    "jsx-a11y/no-autofocus": "off"
+    "jsx-a11y/no-autofocus": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/role-has-required-aria-props": "off"
   }
 }

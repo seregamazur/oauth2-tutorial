@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { ColorModeContext, tokens, useMode } from '../global/theme';
 import EmailIcon from '@mui/icons-material/Email';
@@ -9,43 +9,12 @@ import Header from '../../components/Header';
 import StatBox from '../../components/StatBox';
 import Topbar from '../global/Topbar';
 import Sidebar from '../global/Sidebar';
-import { getAccountInfo, getToken } from '../../utils/Common';
 
 const Dashboard = () => {
   const [theme, colorMode] = useMode();
   const colors = tokens(theme.palette.mode);
 
-  const [isSidebar, setIsSidebar] = useState(true);
-
-  const getUser = async () => {
-    try {
-      const response = await getAccountInfo();
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log(responseData);
-
-        // Map the relevant fields to your Java object structure
-        const user = {
-          id: responseData.id,
-          createdDate: new Date(responseData.createdDate),
-          lastModifiedDate: new Date(responseData.lastModifiedDate),
-          firstName: responseData.firstName,
-          lastName: responseData.lastName,
-          email: responseData.email,
-          authProviders: responseData.authProviders,
-          twoFactorEnabled: responseData.twoFactorEnabled,
-        };
-        return user; // Return the mapped user object
-      } else if (response.status === 404) {
-        throw new Error('No user found with this email.');
-      } else {
-        throw new Error('Login failed');
-      }
-    } catch (error) {
-      throw new Error('Error: ' + error.message);
-    }
-  };
+  const [isSidebar] = useState(true);
 
   return (
     <>

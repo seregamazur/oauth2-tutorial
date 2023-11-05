@@ -1,6 +1,7 @@
 import './Dropdown.css';
 import { removeUserSession } from '../../utils/Common';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 const Dropdown = () => {
   const navigate = useNavigate();
@@ -17,11 +18,13 @@ const Dropdown = () => {
   };
 
   return (
-    <ul className="dropdown-menu">
-      <li onClick={handleSubscription}>Subscription</li>
-      <li>Profile</li>
-      <li onClick={handleSignOut}>Sign Out</li>
-    </ul>
+    <>
+      <ul className="dropdown-menu">
+        <li onClick={handleSubscription}>Subscription</li>
+        <li>Profile</li>
+        <li onClick={handleSignOut}>Sign Out</li>
+      </ul>
+    </>
   );
 };
 

@@ -41,7 +41,7 @@ const TwoFactorPage = () => {
         setQRCodeImage(qrCodeImageUrl);
       }
     } catch (error) {
-      console.error('error during enable 2fa')
+      console.error('error during enable 2fa');
     }
   };
 
@@ -52,7 +52,7 @@ const TwoFactorPage = () => {
         onCloseEnable();
       }
     } catch (error) {
-      console.error('error during verify 2fa')
+      console.error('error during verify 2fa');
     }
   };
 

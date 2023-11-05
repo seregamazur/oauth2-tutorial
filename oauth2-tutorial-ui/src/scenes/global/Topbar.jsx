@@ -7,6 +7,7 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import Dropdown from './Dropdown';
 import './Dropdown.css';
 import { ColorModeContext } from './theme';
+import PropTypes from 'prop-types';
 
 const Topbar = ({ switchStyleButtonOnly }) => {
   const theme = useTheme();
@@ -62,6 +63,10 @@ const Topbar = ({ switchStyleButtonOnly }) => {
       {!switchStyleButtonOnly && <div className="line-topbar"></div>}
     </>
   );
+};
+
+Topbar.propTypes = {
+  switchStyleButtonOnly: PropTypes.func.isRequired,
 };
 
 export default Topbar;

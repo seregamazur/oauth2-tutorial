@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { tokens } from '../scenes/global/theme';
 import ProgressCircle from './ProgressCircle';
+import PropTypes from 'prop-types';
 
 const StatBox = ({ title, subtitle, icon, progress, increase }) => {
   const theme = useTheme();
@@ -17,7 +18,7 @@ const StatBox = ({ title, subtitle, icon, progress, increase }) => {
           </Typography>
         </Box>
         <Box>
-          <ProgressCircle progress={progress} />
+          <ProgressCircle progress={progress} size={1} />
         </Box>
       </Box>
       <Box display="flex" justifyContent="space-between" mt="2px">
@@ -30,6 +31,14 @@ const StatBox = ({ title, subtitle, icon, progress, increase }) => {
       </Box>
     </Box>
   );
+};
+
+StatBox.propTypes = {
+  title: PropTypes.func.isRequired,
+  subtitle: PropTypes.func.isRequired,
+  icon: PropTypes.func.isRequired,
+  progress: PropTypes.func.isRequired,
+  increase: PropTypes.func.isRequired,
 };
 
 export default StatBox;

@@ -14,10 +14,10 @@ const Checkout = () => {
   const [locationData, setLocationData] = useState(null);
   const [traditionalPaymentMethodDivs, setTraditionalPaymentMethodDivs] = useState([]);
   const [instantPaymentMethodDiv, setInstantPaymentMethodDiv] = useState(null);
-  const [openDivId, setOpenDivId] = useState(null);
-  const [selectedDiv, setSelectedDiv] = useState(null);
-  const [radioButtonState, setRadioButtonState] = useState('payment-method__header__radio');
-  const [firstRadioSelected, setFirstRadioSelected] = useState(null);
+  const [, setOpenDivId] = useState(null);
+  const [, setSelectedDiv] = useState(null);
+  const [, setRadioButtonState] = useState('payment-method__header__radio');
+  const [, setFirstRadioSelected] = useState(null);
   const [loading, setLoading] = useState(true);
   const instantPaymentMethod = 'googlepay';
 

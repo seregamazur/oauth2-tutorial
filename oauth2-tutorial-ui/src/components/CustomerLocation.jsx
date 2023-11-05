@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 function CustomerLocation({ onLocationUpdate }) {
   const [error, setError] = useState(null);
@@ -21,5 +22,9 @@ function CustomerLocation({ onLocationUpdate }) {
 
   return <div>{error && <p>Error: {error}</p>}</div>;
 }
+
+CustomerLocation.propTypes = {
+  onLocationUpdate: PropTypes.func.isRequired,
+};
 
 export default CustomerLocation;

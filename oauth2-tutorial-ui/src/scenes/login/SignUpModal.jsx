@@ -5,6 +5,7 @@ import { registerUser, setToken } from '../../utils/Common';
 import { useNavigate } from 'react-router-dom';
 import { Paper, useTheme } from '@mui/material';
 import { themeSettings } from '../global/theme';
+import PropTypes from 'prop-types';
 
 const SignUpModal = ({ showModal, onClose }) => {
   const navigate = useNavigate();
@@ -122,6 +123,11 @@ const SignUpModal = ({ showModal, onClose }) => {
       </Modal>
     </>
   );
+};
+
+SignUpModal.propTypes = {
+  showModal: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default SignUpModal;

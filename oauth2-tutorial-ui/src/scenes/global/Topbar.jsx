@@ -6,7 +6,7 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import Dropdown from './Dropdown';
 import './Dropdown.css';
-import { ColorModeContext, useMode } from './theme';
+import { ColorModeContext } from './theme';
 
 const Topbar = ({ switchStyleButtonOnly }) => {
   const theme = useTheme();
@@ -59,7 +59,7 @@ const Topbar = ({ switchStyleButtonOnly }) => {
           </Box>
         )}
       </Box>
-      {!switchStyleButtonOnly && <div class="line-topbar"></div>}
+      {!switchStyleButtonOnly && <div className="line-topbar"></div>}
     </>
   );
 };

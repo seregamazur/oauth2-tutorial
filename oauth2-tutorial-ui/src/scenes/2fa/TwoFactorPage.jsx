@@ -39,9 +39,10 @@ const TwoFactorPage = () => {
         const qrCodeImageBlob = await response.blob();
         const qrCodeImageUrl = URL.createObjectURL(qrCodeImageBlob);
         setQRCodeImage(qrCodeImageUrl);
-      } else {
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('error during enable 2fa')
+    }
   };
 
   const handleVerify2FA = async () => {
@@ -50,7 +51,9 @@ const TwoFactorPage = () => {
       if (response.ok) {
         onCloseEnable();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('error during verify 2fa')
+    }
   };
 
   return (
@@ -64,7 +67,7 @@ const TwoFactorPage = () => {
               <>
                 <div className="info-text">
                   <p>
-                    Previously, you've taken an important step to enhance the security of your
+                    Previously, you&apos;ve taken an important step to enhance the security of your
                     account by setting up Two-Factor Authentication (2FA). With 2FA, your account is
                     better protected.
                   </p>

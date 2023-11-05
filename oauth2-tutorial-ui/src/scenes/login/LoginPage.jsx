@@ -20,7 +20,6 @@ function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [providers, setProviders] = useState(['GOOGLE', 'GITHUB', 'FACEBOOK', 'OKTA']);
-  const [showProvidersMessage, setShowProvidersMessage] = useState(false);
   const [showChosenProviders, setShowChosenProviders] = useState(false);
 
   const openModal = () => {
@@ -37,7 +36,6 @@ function LoginPage() {
     setRememberMe(false); // Uncheck remember me checkbox
     setErrorMessage(''); // Clear error message
     setShowChosenProviders(false); // Hide OAuth2 login buttons
-    setShowProvidersMessage(false); // Hide the OAuth2 message
     setProviders(['GOOGLE', 'GITHUB', 'FACEBOOK', 'OKTA']);
   };
 
@@ -73,7 +71,6 @@ function LoginPage() {
           setErrorMessage('');
         } else {
           setErrorMessage('');
-          setShowProvidersMessage(true);
           setProviders(authProviders || []);
           setShowChosenProviders(authProviders && authProviders.length > 0);
         }
@@ -138,7 +135,7 @@ function LoginPage() {
               />
               {showChosenProviders && (
                 <div className="provider-message">
-                  It looks like you've previously logged in using OAuth2.
+                  It looks like you&apos;ve previously logged in using OAuth2.
                 </div>
               )}
               {errorMessage && <p className="error-message">{errorMessage}</p>}

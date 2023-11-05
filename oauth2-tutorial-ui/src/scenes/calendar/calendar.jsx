@@ -21,7 +21,7 @@ import Sidebar from '../global/Sidebar';
 const Calendar = () => {
   const [theme, colorMode] = useMode();
   const colors = tokens(theme.palette.mode);
-  const [isSidebar, setIsSidebar] = useState(true);
+  const [isSidebar] = useState(true);
   const [currentEvents, setCurrentEvents] = useState([]);
 
   const handleDateClick = (selected) => {

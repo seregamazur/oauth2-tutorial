@@ -1,67 +1,67 @@
 .signup-input {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: none;
-    border-bottom: 2px solid #ddd;
-    font-size: 16px;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #ddd;
+  font-size: 16px;
 }
 
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-button-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .btn-cancel,
 .btn-register {
-    padding: 10px 20px;
-    margin-right: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    border: 1px solid black !important;
+  padding: 10px 20px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  border: 1px solid black !important;
 }
 
 .btn-register {
-    background-color: #007bff;
-    color: #fff;
+  background-color: #007bff;
+  color: #fff;
 }
 
 .btn-cancel {
-    background-color: #dc3545;
-    color: #fff;
+  background-color: #dc3545;
+  color: #fff;
 }
 
 .btn-register:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .btn-cancel:hover {
-    background-color: #c82333;
+  background-color: #c82333;
 }
 
 .modal-overlay h3 {
-    color: #667680;
-    text-align: center;
-    font-size: 1.4em;
-    letter-spacing: 1px;
-    margin: 10px 0 16px;
-    text-transform: uppercase;
+  color: #667680;
+  text-align: center;
+  font-size: 1.4em;
+  letter-spacing: 1px;
+  margin: 10px 0 16px;
+  text-transform: uppercase;
 }

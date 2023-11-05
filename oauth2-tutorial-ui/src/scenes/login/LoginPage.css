@@ -1,212 +1,214 @@
 .login-methods-separator {
-    align-items: center;
-    color: #687282;
-    display: flex;
-    font-size: 13px;
-    justify-content: center;
-    line-height: 19px;
-    margin-top: 16px;
-    white-space: nowrap;
-    width: 90%;
+  align-items: center;
+  color: #687282;
+  display: flex;
+  font-size: 13px;
+  justify-content: center;
+  line-height: 19px;
+  margin-top: 16px;
+  white-space: nowrap;
+  width: 90%;
 }
 
 .login-methods-separator:before {
-    margin-right: 20px;
-    background: #e6e9eb;
-    content: "";
-    display: block;
-    height: 1px;
-    width: 100%;
+  margin-right: 20px;
+  background: #e6e9eb;
+  content: '';
+  display: block;
+  height: 1px;
+  width: 100%;
 }
 
 .login-methods-separator:after {
-    margin-left: 20px;
-    background: #e6e9eb;
-    content: "";
-    display: block;
-    height: 1px;
-    width: 100%;
+  margin-left: 20px;
+  background: #e6e9eb;
+  content: '';
+  display: block;
+  height: 1px;
+  width: 100%;
 }
 
-
 body {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 .login-container {
-    width: 400px;
-    margin: 50px auto 0;
-    padding: 10px;
-    box-shadow: 5px 5px 10px 10px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  margin: 50px auto 0;
+  padding: 10px;
+  box-shadow: 5px 5px 10px 10px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .login-input {
-    width: 80%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: none;
-    border-bottom: 2px solid #ddd;
-    font-size: 16px;
+  width: 80%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #ddd;
+  font-size: 16px;
 }
 
-input[type=submit] {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 80%;
-    font-size: 14px;
+input[type='submit'] {
+  background-color: #4caf50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 80%;
+  font-size: 14px;
 }
 
-input[type=submit]:hover {
-    background-color: #45a049;
+input[type='submit']:hover {
+  background-color: #45a049;
 }
 
-input[type=button] {
-    background-color: #FFA500;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 80%;
-    font-size: 14px;
+input[type='button'] {
+  background-color: #ffa500;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 80%;
+  font-size: 14px;
 }
 
-input[type=button]:hover {
-    background-color: #F0A500;
+input[type='button']:hover {
+  background-color: #f0a500;
 }
 
 .social-login-method .btn {
-    display: flex;
-    align-items: center;
-    width: 80%;
-    height: 50px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    color: white !important;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    border: 1px solid black !important;
+  display: flex;
+  align-items: center;
+  width: 80%;
+  height: 50px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  color: white !important;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid black !important;
 }
 
 .social-login-method .social-icon {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .social-login-method .button-text {
-    display: flex;
-    text-decoration: none;
-    align-items: center;
+  display: flex;
+  text-decoration: none;
+  align-items: center;
 }
 
 .social-login-method {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .provider-icon {
-    width: 26px;
-    height: 26px;
-    margin-right: 10px;
-    margin-left: 10px;
-    display: inline-block;
-    vertical-align: middle;
+  width: 26px;
+  height: 26px;
+  margin-right: 10px;
+  margin-left: 10px;
+  display: inline-block;
+  vertical-align: middle;
 }
 .provider-icon img {
-    width: 26px;
-    height: 26px;
+  width: 26px;
+  height: 26px;
 }
 .social-login-method .provider-name {
-    text-align: left;
-    font-size: 14px;
-    letter-spacing: 1px;
-    font-weight: 600;
+  text-align: left;
+  font-size: 14px;
+  letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .social-login-method .provider-name--google {
-    text-align: left;
-    font-size: 14px;
-    letter-spacing: 1px;
-    color: black;
-    font-weight: 600;
+  text-align: left;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: black;
+  font-weight: 600;
 }
 
 .google {
-    background-color: white !important;
+  background-color: white !important;
 }
 
 .github {
-    background-color: #171515 !important;
+  background-color: #171515 !important;
 }
 
 .okta {
-    background-color: #007dc1 !important;
+  background-color: #007dc1 !important;
 }
 
 .facebook {
-    background-color: #3b5998 !important;
+  background-color: #3b5998 !important;
 }
 
 .social-login-method .btn:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 .social-login-method .btn-cancel {
-    background-color: #ccc;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    margin-right: 10px;
-    cursor: pointer;
-    border-radius: 4px;
+  background-color: #ccc;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 .social-login-method .btn-register {
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 4px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 .social-login-method .btn-register:hover {
-    background-color: #ddd;
-    color: #333;
+  background-color: #ddd;
+  color: #333;
 }
 
 .social-login-method .btn-cancel:hover {
-    background-color: #f44336;
-    color: #fff;
+  background-color: #f44336;
+  color: #fff;
 }
 
 .login-container h3 {
-    color: #667680;
-    text-align: center;
-    font-size: 1.4em;
-    letter-spacing: 1px;
-    margin: 0 0 16px;
-    text-transform: uppercase;
+  color: #667680;
+  text-align: center;
+  font-size: 1.4em;
+  letter-spacing: 1px;
+  margin: 0 0 16px;
+  text-transform: uppercase;
 }
-

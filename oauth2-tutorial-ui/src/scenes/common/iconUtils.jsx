@@ -1,5 +1,5 @@
 function getIconPath(methodType) {
-    return `/icons/${methodType}.svg`;
+  return `/icons/${methodType}.svg`;
 }
 
 export { getIconPath };

@@ -1,0 +1,22 @@
+name: ReactJS CI
+
+on: pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
+
+      - name: Install Dependencies and Build React App
+        run: |
+          npm install
+          npm run build
+        working-directory: oauth2-tutorial-ui

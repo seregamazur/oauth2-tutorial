@@ -16,4 +16,7 @@ jobs:
           node-version: 18.16.0
 
       - name: Install Dependencies and Build React App
-        run: npm install && npm run build
+        run: |
+          npm install
+          npm run build
+        working-directory: oauth2-tutorial-ui

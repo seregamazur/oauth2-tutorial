@@ -6,7 +6,7 @@ import SignUpModal from './SignUpModal';
 import {ColorModeContext, themeSettings, useMode} from "../global/theme";
 import Topbar from "../global/Topbar";
 import {CssBaseline, ThemeProvider} from "@mui/material";
-import {getIconPath} from "../checkout/iconUtils";
+import {getIconPath} from "../common/iconUtils";
 
 function LoginPage() {
 

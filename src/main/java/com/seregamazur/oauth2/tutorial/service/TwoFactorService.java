@@ -35,7 +35,7 @@ public class TwoFactorService {
     }
 
     public void storeTempSecret(String sessionId, String secretKey) {
-        Duration expirationDuration = Duration.ofMinutes(30);
+        Duration expirationDuration = Duration.ofMinutes(5);
         redisConnection.sync().setex(sessionId, expirationDuration.getSeconds(), secretKey);
     }
 
@@ -79,19 +79,4 @@ public class TwoFactorService {
         return baos.toByteArray();
     }
 
-    public void infinityGeneratingCodes(String secretKey) {
-        String lastCode = null;
-        while (true) {
-            String code = getTOTPCode(secretKey);
-            if (!code.equals(lastCode)) {
-                System.out.println(code);
-            }
-            lastCode = code;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-            }
-            ;
-        }
-    }
 }

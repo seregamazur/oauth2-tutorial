@@ -19,7 +19,7 @@ public class OktaOAuth2ClientImpl implements OktaOAuth2Client {
     private String redirectUri;
 
     @Autowired
-    private OktaClient clientAuthorization;
+    private OktaFeignClient clientAuthorization;
 
     @Override
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {

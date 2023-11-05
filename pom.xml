@@ -17,13 +17,10 @@
         <java.version>11</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <spring.version>5.3.13</spring.version>
-        <velocity.version>1.7</velocity.version>
-        <velocity-tools.version>2.0</velocity-tools.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
     </properties>
 
     <dependencies>
-
         <!--        Spring-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -51,6 +48,7 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
         </dependency>
+
         <!-- web -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -65,17 +63,76 @@
             <version>2.14.2</version>
         </dependency>
 
-        <!--    3rd party-->
-<!--        validate input email-->
+        <!--        validate input email-->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
         </dependency>
+
+        <!--        database-->
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
             <version>6.2.6.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.4.2</version>
+        </dependency>
+
+        <!--        oauth2-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.34.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client-jackson2</artifactId>
+            <version>1.34.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>9.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.okta.jwt</groupId>
+            <artifactId>okta-jwt-verifier</artifactId>
+            <version>0.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.okta.jwt</groupId>
+            <artifactId>okta-jwt-verifier-impl</artifactId>
+            <version>0.5.1</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!--        2fa-->
@@ -97,11 +154,17 @@
             <version>3.2.1</version>
         </dependency>
 
-
+        <!--        3rd party-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version>
         </dependency>
 
         <dependency>
@@ -117,57 +180,24 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
+        <!--        payment gateway-->
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.4.2</version>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>23.3.0</version>
         </dependency>
 
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
+            <groupId>com.adyen</groupId>
+            <artifactId>adyen-java-api-library</artifactId>
+            <version>21.3.0</version>
         </dependency>
 
         <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.34.1</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client-jackson2</artifactId>
-            <version>1.34.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>9.8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.okta.jwt</groupId>
-            <artifactId>okta-jwt-verifier</artifactId>
-            <version>0.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.okta.jwt</groupId>
-            <artifactId>okta-jwt-verifier-impl</artifactId>
-            <version>0.5.1</version>
-            <scope>runtime</scope>
-        </dependency>
-
 
     </dependencies>
 

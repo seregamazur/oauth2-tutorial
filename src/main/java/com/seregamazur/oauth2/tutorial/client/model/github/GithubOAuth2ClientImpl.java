@@ -24,9 +24,9 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
     private String redirectUri;
 
     @Autowired
-    private GithubClientAuthorization clientAuthorization;
+    private GithubFeignClientAuthorization clientAuthorization;
     @Autowired
-    private GithubClientData githubClientData;
+    private GithubFeignClientData githubFeignClientData;
 
     @Override
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {
@@ -38,7 +38,7 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
 
     @Override
     public IdToken getUserInfo(String accessToken) {
-        return githubClientData.verifyToken(accessToken);
+        return githubFeignClientData.verifyToken(accessToken);
     }
 
 }

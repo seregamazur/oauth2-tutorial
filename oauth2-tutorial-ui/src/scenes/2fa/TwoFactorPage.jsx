@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {enableTwoFactor, getToken} from '../../utils/Common';
-import './TwoFactorPage.css'
+import {enableTwoFactor, twoFactorEnabled, verifyTwoFactor} from '../../utils/Common';
+import './two-factor.css'
 import {Button, Form} from "react-bootstrap";
 import OtpInput from "react-otp-input";
-import Topbar from "../global/Topbar";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import {ColorModeContext, useMode} from "../global/theme";
 import {useNavigate} from "react-router-dom";
@@ -13,54 +12,47 @@ const TwoFactorPage = () => {
     const [theme, colorMode] = useMode();
     const navigate = useNavigate();
 
-    const [showQRCode, setShowQRCode] = useState(false);
     const [authenticatorCode, setAuthenticatorCode] = useState('');
     const [qrCodeImage, setQRCodeImage] = useState('');
+    const [verify2Fa, setVerify2Fa] = useState('');
 
-    const onClose = () => {
+    const onCloseVerify = () => {
+        navigate('/login');
+    }
+
+    const onCloseEnable = () => {
         navigate('/dashboard');
     }
 
     useEffect(() => {
-        // Call getUser() when the component mounts
-        handleEnable2FA();
-    }, []); // Empty dependency array means this effect runs only once on mount
+        setVerify2Fa(twoFactorEnabled());
+        if (verify2Fa) {
+            handleVerify2FA()
+        } else {
+            handleEnable2FA();
+        }
+    }, []);
 
     const handleEnable2FA = async () => {
-        // Make a request to enable 2FA and get the QR code image
         try {
             const response = await enableTwoFactor();
             if (response.ok) {
                 const qrCodeImageBlob = await response.blob();
                 const qrCodeImageUrl = URL.createObjectURL(qrCodeImageBlob);
                 setQRCodeImage(qrCodeImageUrl);
-                setShowQRCode(true);
             } else {
-                // Handle error
             }
         } catch (error) {
-            // Handle network or other errors
         }
     };
 
     const handleVerify2FA = async () => {
-        // Make a request to verify 2FA using the entered authenticator code
         try {
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/verify-2fa?totpCode=' + authenticatorCode, {
-                method: 'POST',
-                headers: {
-                    Authorization: 'Bearer ' + getToken(),
-                    'Content-Type': 'application/json',
-                }
-            });
+            const response = await verifyTwoFactor(authenticatorCode);
             if (response.ok) {
-                onClose();
-                console.log('2FA successful');
-            } else {
-                // Handle verification error
+                onCloseEnable();
             }
         } catch (error) {
-            // Handle network or other errors
         }
     };
 
@@ -69,25 +61,22 @@ const TwoFactorPage = () => {
             <ColorModeContext.Provider value={colorMode}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline/>
-                    <Topbar switchStyleButtonOnly={true}/>
-                    <div className="two-factor-page">
-                        <h2>Enable 2FA</h2>
+                    {verify2Fa && <div className="two-factor-page">
+                        <h3>Verify Your 2FA</h3>
                         <>
                             <div className="info-text">
-                                <h3>Setup authenticator app</h3>
                                 <p>
-                                    Authenticator apps and browser extensions like 1Password, Authy, Microsoft Authenticator, etc. generate
-                                    one-time
-                                    passwords that are used as a second factor to verify your identity when prompted during sign-in.
+                                    Previously, you've taken an important step to enhance the security of your account by setting up
+                                    Two-Factor Authentication (2FA). With 2FA, your account is better protected.
                                 </p>
-                                <h3>Scan the QR code</h3>
                                 <p>
-                                    Use an authenticator app or browser extension to scan. Learn more about enabling 2FA.
+                                    Authenticator apps and browser extensions like 1Password, Authy, Microsoft Authenticator, and others
+                                    generate one-time passwords, which serve as a second layer of security to confirm your identity when
+                                    prompted during the sign-in process.
                                 </p>
                             </div>
-                            <img src={qrCodeImage} alt="QR Code"/>
                             <br/>
-                            <h3>Enter Authenticator Code</h3>
+                            <h4>Enter Authenticator Code</h4>
                             <Form.Group controlId="authenticatorCode">
                                 <OtpInput
                                     shouldAutoFocus={true}
@@ -95,21 +84,61 @@ const TwoFactorPage = () => {
                                     onChange={setAuthenticatorCode}
                                     isInputNum={true}
                                     numInputs={6}
-                                    inputStyle="inputStyle"
+                                    inputStyle="otp"
                                     renderInput={(props) => <input {...props} />}
                                 />
                             </Form.Group>
 
                             <div className="modal-button-row">
-                                <Button variant="primary" className="btn-register" onClick={handleVerify2FA}>
+                                <Button className="btn--verify" onClick={handleVerify2FA}>
                                     Verify
                                 </Button>
-                                <Button variant="secondary" className="btn-cancel" onClick={onClose}>
+                                <Button className="btn--cancel" onClick={onCloseVerify}>
                                     Cancel
                                 </Button>
                             </div>
                         </>
-                    </div>
+                    </div>}
+                    {!verify2Fa && <div className="two-factor-page">
+                        <h3>Enable 2FA</h3>
+                        <>
+                            <div className="info-text">
+                                <h4>Setup authenticator app</h4>
+                                <p>
+                                    Authenticator apps and browser extensions like 1Password, Authy, Microsoft Authenticator, etc. generate
+                                    one-time
+                                    passwords that are used as a second factor to verify your identity when prompted during sign-in.
+                                </p>
+                                <h4>Scan the QR code</h4>
+                                <p>
+                                    Use an authenticator app or browser extension to scan. Learn more about enabling 2FA.
+                                </p>
+                            </div>
+                            <img src={qrCodeImage} alt="QR Code"/>
+                            <br/>
+                            <h4>Enter Authenticator Code</h4>
+                            <Form.Group controlId="authenticatorCode">
+                                <OtpInput
+                                    shouldAutoFocus={true}
+                                    value={authenticatorCode}
+                                    onChange={setAuthenticatorCode}
+                                    isInputNum={true}
+                                    numInputs={6}
+                                    inputStyle="otp"
+                                    renderInput={(props) => <input {...props} />}
+                                />
+                            </Form.Group>
+
+                            <div className="modal-button-row">
+                                <Button className="btn--verify" onClick={handleVerify2FA}>
+                                    Enable
+                                </Button>
+                                <Button className="btn--cancel" onClick={onCloseEnable}>
+                                    Cancel
+                                </Button>
+                            </div>
+                        </>
+                    </div>}
                 </ThemeProvider>
             </ColorModeContext.Provider>
         </>

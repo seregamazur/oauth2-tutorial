@@ -17,7 +17,7 @@ public class FacebookOAuth2ClientImpl implements FacebookOAuth2Client {
     private String redirectUri;
 
     @Autowired
-    private FacebookClient clientAuthorization;
+    private FacebookFeignClient clientAuthorization;
 
     @Override
     public OAuth2TokenSet convertAuthCodeToAccessToken(String authorizationCode) {

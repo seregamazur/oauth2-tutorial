@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import com.seregamazur.oauth2.tutorial.client.model.IdToken;
 
 @FeignClient(name = "githubClientData", url = "https://api.github.com")
-public interface GithubClientData {
+public interface GithubFeignClientData {
 
     @GetMapping(value = "/user?fields=id,name,email",
         headers = { "Content-Type=application/json", "Accept=application/json" })

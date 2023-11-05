@@ -1,9 +1,5 @@
 package com.seregamazur.oauth2.tutorial.resource;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
@@ -24,11 +20,10 @@ import com.seregamazur.oauth2.tutorial.crud.ResponseUtil;
 import com.seregamazur.oauth2.tutorial.crud.User;
 import com.seregamazur.oauth2.tutorial.crud.UserDTO;
 import com.seregamazur.oauth2.tutorial.crud.UserRepository;
-import com.seregamazur.oauth2.tutorial.service.UserService;
 import com.seregamazur.oauth2.tutorial.security.jwt.JWTToken;
 import com.seregamazur.oauth2.tutorial.security.jwt.UserAlreadyExistsException;
+import com.seregamazur.oauth2.tutorial.service.UserService;
 import com.seregamazur.oauth2.tutorial.service.token.JWTTokenProvider;
-import com.seregamazur.oauth2.tutorial.utils.SecurityUtils;
 
 @RestController
 public class UserJWTController {
@@ -62,7 +57,7 @@ public class UserJWTController {
 
     @Transactional
     @PostMapping(path = "/api/v1/authenticate", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<JWTToken> authorize(LoginRequestEncoded loginRequestEncoded) {
+    public ResponseEntity<JWTToken> authorize(@RequestBody LoginRequestEncoded loginRequestEncoded) {
         User userByEmail = userRepository.findByEmail(loginRequestEncoded.getEmail())
             .orElseThrow(() -> new UsernameNotFoundException("No such user with email:" + loginRequestEncoded.getEmail()));
 

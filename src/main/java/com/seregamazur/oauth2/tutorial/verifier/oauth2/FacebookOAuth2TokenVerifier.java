@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seregamazur.oauth2.tutorial.client.model.IdToken;
-import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookClient;
+import com.seregamazur.oauth2.tutorial.client.model.facebook.FacebookFeignClient;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,18 +13,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FacebookOAuth2TokenVerifier implements OAuth2TokenVerifier {
 
-    private final FacebookClient facebookClient;
+    private final FacebookFeignClient facebookFeignClient;
 
     @Autowired
-    public FacebookOAuth2TokenVerifier(FacebookClient facebookClient) {
-        this.facebookClient = facebookClient;
+    public FacebookOAuth2TokenVerifier(FacebookFeignClient facebookFeignClient) {
+        this.facebookFeignClient = facebookFeignClient;
     }
 
     @Override
     public String verifyAndGetSubFromToken(OAuth2TokenSet tokenSet) {
         IdToken idToken;
         try {
-            idToken = facebookClient.verifyToken(tokenSet.getAccessToken());
+            idToken = facebookFeignClient.verifyToken(tokenSet.getAccessToken());
         } catch (Exception e) {
             throw new AccessTokenVerificationException(e);
         }
@@ -34,7 +34,7 @@ public class FacebookOAuth2TokenVerifier implements OAuth2TokenVerifier {
     @Override
     public boolean verifyToken(OAuth2TokenPair token) {
         try {
-            facebookClient.verifyToken(token.getAccessToken());
+            facebookFeignClient.verifyToken(token.getAccessToken());
             return true;
         } catch (Exception e) {
             log.error("Invalid access_token.", e);

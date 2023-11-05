@@ -9,7 +9,7 @@ import com.seregamazur.oauth2.tutorial.client.model.IdToken;
 import com.seregamazur.oauth2.tutorial.client.model.token.OAuth2TokenSet;
 
 @FeignClient(name = "facebookClient", url = "https://graph.facebook.com")
-public interface FacebookClient {
+public interface FacebookFeignClient {
 
     @GetMapping(value = "v16.0/oauth/access_token?client_id={clientId}&scope=email%20openid&client_secret={clientSecret}&redirect_uri={redirectUri}&code={authCode}",
         headers = { "Content-Type=application/json", "Accept=application/json" })

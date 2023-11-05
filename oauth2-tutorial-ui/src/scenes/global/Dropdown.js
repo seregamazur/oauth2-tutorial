@@ -1,5 +1,5 @@
 import "./Dropdown.css"
-import {removeUserSession} from "../../utils/Common";
+import {getCustomerPortalSession, removeUserSession} from "../../utils/Common";
 import {useNavigate} from 'react-router-dom';
 
 
@@ -13,8 +13,14 @@ const Dropdown = () => {
         navigate('/login');
     };
 
+    const handleSubscription = () => {
+        console.log('opening subscription')
+        navigate('/checkout');
+    };
+
     return (
         <ul className="dropdown-menu">
+            <li onClick={handleSubscription}>Subscription</li>
             <li>Profile</li>
             <li onClick={handleSignOut}>Sign Out</li>
         </ul>

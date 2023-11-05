@@ -1,30 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom'
-import {setToken, twoFactorEnabled} from "../utils/Common";
-import TwoFactorModal from "../scenes/login/TwoFactorModal";
+import {setToken} from "../utils/Common";
 
 const OAuth2Token = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const token = searchParams.get('token');
-    const [show2fa, setShow2fa] = useState(false);
-
-    const close2fa = () => {
-        setShow2fa(false);
-        navigate('/login');
-    };
 
     useEffect(() => {
         setToken(token);
-        const twoFactor = twoFactorEnabled();
-        if (twoFactor === false) {
-            navigate('/2fa');
-        } else {
-            setShow2fa(true);
-        }
+        navigate('/2fa');
     }, []);
-    return <TwoFactorModal showModal={show2fa} onClose={close2fa}/>
+    return <></>
 };
 
 export default OAuth2Token;

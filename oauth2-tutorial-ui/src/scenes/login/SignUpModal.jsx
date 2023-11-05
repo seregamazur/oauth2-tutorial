@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Modal} from 'react-bootstrap';
 import './SignUpModal.css';
-import {setToken} from "../../utils/Common";
+import {registerUser, setToken} from "../../utils/Common";
 import {useNavigate} from "react-router-dom";
 import {Paper, useTheme} from "@mui/material";
 import {themeSettings} from "../global/theme";
@@ -20,47 +20,28 @@ const SignUpModal = ({showModal, onClose}) => {
         // Get the form element
         const form = document.getElementById('signup-form');
 
-        // Check form validity
         if (form.checkValidity()) {
             // Perform user creation logic here
             console.log('Creating user:', firstName, lastName, email, password);
-            // Reset form fields
             setFirstName('');
             setLastName('');
             setEmail('');
             setPassword('');
-            // Close the modal
             sendRegisterUser();
         } else {
-            // If the form is invalid, trigger the HTML5 form validation messages
             form.reportValidity();
         }
     };
 
     const sendRegisterUser = async () => {
-
         try {
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/register', {
-                method: 'POST',
-                body: JSON.stringify({
-                    'email': email,
-                    'firstName': firstName,
-                    'lastName': lastName,
-                    'password': password
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
+            const response = await registerUser(email, firstName, lastName, password);
             if (response.ok) {
                 const responseData = await response.json();
                 const jwtValue = responseData.value;
                 setToken(jwtValue);
-                // Handle successful login here
-                console.log('Login successful');
                 onClose();
-                navigate('/dashboard');
+                navigate('/2fa');
             } else {
                 // Handle login error here
                 console.error('Login failed');
@@ -75,7 +56,7 @@ const SignUpModal = ({showModal, onClose}) => {
         <>
             <Modal className="modal-overlay" show={showModal} onHide={onClose} centered>
                 <Paper style={inputStyle.palette.background}>
-                    <h2>Sign Up</h2>
+                    <h3>Sign Up</h3>
                     <Form id="signup-form">
                         <Form.Group controlId="formFirstName">
                             <Form.Label>First Name</Form.Label>
